@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
-
+import { AuthProvider } from "@/lib/auth";
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -110,13 +110,24 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+// function RootComponent() {
+//   const { queryClient } = Route.useRouteContext();
+
+//   return (
+//     <QueryClientProvider client={queryClient}>
+//       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+//       <Outlet />
+//     </QueryClientProvider>
+//   );
+// }
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <AuthProvider>
+        <Outlet />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

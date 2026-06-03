@@ -15,28 +15,73 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
-  const facilities = ["48 Luxury Rooms", "Family Restaurant", "Party Hall & Conference", "Spa & Wellness", "24/7 Room Service", "Secure Parking"];
+  const facilities = ["48 Luxury Rooms", "Family Restaurant", "Party Hall & Conference", "Wellness", "24/7 Room Service", "Secure Parking"];
   return (
     <SiteLayout>
-      <section className="relative h-[40vh] min-h-[300px] overflow-hidden">
-        <img src={hotelExterior} alt="Hotel" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-black/55" />
-        <div className="relative z-10 container mx-auto h-full flex flex-col items-center justify-center px-4 text-center text-white">
-          <p className="text-xs uppercase tracking-[0.4em] text-gold">About Us</p>
-          <h1 className="mt-3 font-display text-4xl md:text-5xl font-bold">Heritage. Hospitality. Home.</h1>
-        </div>
-      </section>
+      <section className="container mx-auto px-4 pt-16 text-center">
 
-      <section className="container mx-auto grid gap-10 px-4 py-16 md:grid-cols-2 items-center">
+  <h1 className="mt-3 font-display text-4xl font-bold">
+    Welcome to Mulugu Hotel & Restaurant
+  </h1>
+
+  <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
+    Experience luxury hospitality, delicious dining, and memorable stays in the heart of Mulugu.
+  </p>
+</section>
+
+
+     <section className="container mx-auto grid gap-10 px-4 pt-16 pb-16 md:grid-cols-2 items-center">
         <img src={hotelExterior} alt="Hotel" className="rounded-2xl shadow-luxury aspect-[4/5] object-cover" />
         <div>
-          <SectionHeading eyebrow="Our Story" title="A decade of luxury in Mulugu" />
-          <p className="mt-5 text-muted-foreground leading-relaxed">
-            What began as a humble family-run inn has grown into one of Mulugu's most loved luxury hotels.
-            Today, Mulugu Hotel & Restaurant blends timeless Telangana hospitality with modern amenities,
-            curated dining and unforgettable tourism experiences.
-          </p>
-        </div>
+  <div>
+  <p className="text-xs uppercase tracking-[0.4em] font-bold text-black">
+    Our Story
+  </p>
+
+  <h2 className="mt-3 font-display text-4xl font-bold text-gold">
+    A decade of luxury in Mulugu
+  </h2>
+</div>
+
+  <p className="mt-5 text-muted-foreground leading-relaxed">
+    What began as a humble family-run inn has grown into one of
+    Mulugu's most loved luxury hotels. Today, Mulugu Hotel &
+    Restaurant blends timeless Telangana hospitality with modern
+    amenities, curated dining and unforgettable tourism experiences.
+  </p>
+
+  <div className="mt-8 grid grid-cols-2 gap-4">
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+      <h3 className="text-3xl font-bold text-black">10+</h3>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Years of Hospitality
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+      <h3 className="text-3xl font-bold text-black">48</h3>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Luxury Rooms
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+      <h3 className="text-3xl font-bold text-black">5000+</h3>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Happy Guests
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+      <h3 className="text-3xl font-bold text-black">24/7</h3>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Guest Support
+      </p>
+    </div>
+  </div>
+</div>
+
+    
       </section>
 
       <section className="bg-secondary/50 py-16">

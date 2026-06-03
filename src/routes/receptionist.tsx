@@ -1,14 +1,19 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { LayoutDashboard, CalendarCheck, UtensilsCrossed, LogIn, LogOut, Bed, Users } from "lucide-react";
-import { AuthProvider, useAuth } from "@/lib/auth";
+import { useAuth } from "@/lib/auth";
 import { DashboardShell, StatCard, DataTable, type SidebarItem } from "@/components/DashboardShell";
 import { ROOMS } from "@/lib/mockData";
 import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createFileRoute("/receptionist")({
   head: () => ({ meta: [{ title: "Receptionist Dashboard — Mulugu Hotel" }, { name: "description", content: "Front desk dashboard." }]}),
-  component: () => <AuthProvider><RecepGuard /><Toaster /></AuthProvider>,
+  component: () => (
+  <>
+    <RecepGuard />
+    <Toaster />
+  </>
+),
 });
 
 const items: SidebarItem[] = [

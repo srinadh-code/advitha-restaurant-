@@ -1,8 +1,8 @@
 export const HOTEL = {
   name: "Mulugu Hotel & Restaurant",
   tagline: "Luxury Stay · Family Dining · Tourism",
-  phone: "+91 98765 43210",
-  whatsapp: "919876543210",
+  phone: "+91",
+  whatsapp: "91",
   email: "info@muluguhotel.com",
   address: "Main Road, Mulugu, Telangana 506343",
   mapsEmbed:

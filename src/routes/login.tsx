@@ -24,15 +24,26 @@ function Inner() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const r = login(email, password);
-    if (!r.ok) { toast.error(r.error || "Login failed"); return; }
-    toast.success("Welcome back!");
-    if (r.role === "admin") navigate({ to: "/admin" });
-    else if (r.role === "receptionist") navigate({ to: "/receptionist" });
-    else navigate({ to: "/" });
-  };
+  const submit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const r = await login(email, password);
+
+  if (!r.ok) {
+    toast.error(r.error || "Login failed");
+    return;
+  }
+
+  toast.success("Welcome back!");
+
+  if (r.role === "admin") {
+    navigate({ to: "/admin" });
+  } else if (r.role === "receptionist") {
+    navigate({ to: "/receptionist" });
+  } else {
+    navigate({ to: "/" });
+  }
+};
 
   return (
     <section className="container mx-auto grid place-items-center px-4 py-20">
@@ -48,15 +59,7 @@ function Inner() {
           <Link to="/forgot-password" className="text-primary hover:underline">Forgot password?</Link>
           <Link to="/signup" className="text-primary hover:underline">Create account</Link>
         </div>
-        <div className="mt-6 rounded-md border border-dashed border-border p-3 text-xs">
-          <p className="font-semibold mb-2">Demo Credentials</p>
-          {DEMO_USERS.map((u) => (
-            <button key={u.email} type="button" onClick={() => { setEmail(u.email); setPassword(u.password); }}
-              className="block w-full text-left hover:text-primary">
-              <span className="capitalize font-medium">{u.role}:</span> {u.email} / {u.password}
-            </button>
-          ))}
-        </div>
+     
       </div>
     </section>
   );

@@ -9,11 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyOtpRouteImport } from './routes/verify-otp'
 import { Route as TourismRouteImport } from './routes/tourism'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RoomsRouteImport } from './routes/rooms'
 import { Route as RestaurantRouteImport } from './routes/restaurant'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ReceptionistRouteImport } from './routes/receptionist'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GalleryRouteImport } from './routes/gallery'
@@ -24,6 +26,11 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VerifyOtpRoute = VerifyOtpRouteImport.update({
+  id: '/verify-otp',
+  path: '/verify-otp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TourismRoute = TourismRouteImport.update({
   id: '/tourism',
   path: '/tourism',
@@ -47,6 +54,11 @@ const RoomsRoute = RoomsRouteImport.update({
 const RestaurantRoute = RestaurantRouteImport.update({
   id: '/restaurant',
   path: '/restaurant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReceptionistRoute = ReceptionistRouteImport.update({
@@ -105,11 +117,13 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/receptionist': typeof ReceptionistRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/restaurant': typeof RestaurantRoute
   '/rooms': typeof RoomsRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tourism': typeof TourismRoute
+  '/verify-otp': typeof VerifyOtpRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -121,11 +135,13 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/receptionist': typeof ReceptionistRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/restaurant': typeof RestaurantRoute
   '/rooms': typeof RoomsRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tourism': typeof TourismRoute
+  '/verify-otp': typeof VerifyOtpRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -138,11 +154,13 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/receptionist': typeof ReceptionistRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/restaurant': typeof RestaurantRoute
   '/rooms': typeof RoomsRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tourism': typeof TourismRoute
+  '/verify-otp': typeof VerifyOtpRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -156,11 +174,13 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/receptionist'
+    | '/reset-password'
     | '/restaurant'
     | '/rooms'
     | '/signup'
     | '/sitemap.xml'
     | '/tourism'
+    | '/verify-otp'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -172,11 +192,13 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/receptionist'
+    | '/reset-password'
     | '/restaurant'
     | '/rooms'
     | '/signup'
     | '/sitemap.xml'
     | '/tourism'
+    | '/verify-otp'
   id:
     | '__root__'
     | '/'
@@ -188,11 +210,13 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/receptionist'
+    | '/reset-password'
     | '/restaurant'
     | '/rooms'
     | '/signup'
     | '/sitemap.xml'
     | '/tourism'
+    | '/verify-otp'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -205,15 +229,24 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
   ReceptionistRoute: typeof ReceptionistRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   RestaurantRoute: typeof RestaurantRoute
   RoomsRoute: typeof RoomsRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TourismRoute: typeof TourismRoute
+  VerifyOtpRoute: typeof VerifyOtpRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify-otp': {
+      id: '/verify-otp'
+      path: '/verify-otp'
+      fullPath: '/verify-otp'
+      preLoaderRoute: typeof VerifyOtpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tourism': {
       id: '/tourism'
       path: '/tourism'
@@ -247,6 +280,13 @@ declare module '@tanstack/react-router' {
       path: '/restaurant'
       fullPath: '/restaurant'
       preLoaderRoute: typeof RestaurantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/receptionist': {
@@ -325,11 +365,13 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
   ReceptionistRoute: ReceptionistRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   RestaurantRoute: RestaurantRoute,
   RoomsRoute: RoomsRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TourismRoute: TourismRoute,
+  VerifyOtpRoute: VerifyOtpRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

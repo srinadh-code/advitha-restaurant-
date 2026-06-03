@@ -10,7 +10,7 @@ import { ROOMS, FOODS, TOURISM, REVIEWS, HOTEL } from "@/lib/mockData";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ADVITHA Hotel & Restaurant — Luxury Stay in Telangana" },
+      { title: "ADVITHA Hotel & Restaurant — Mulugu" },
       { name: "description", content: "Premium luxury hotel, family restaurant and tourism gateway in Mulugu, Telangana." },
       { property: "og:title", content: "Mulugu Hotel & Restaurant" },
       { property: "og:description", content: "Premium luxury hotel, family restaurant and tourism gateway in Mulugu." },
@@ -32,18 +32,23 @@ function Index() {
     <SiteLayout>
       {/* HERO */}
       <section className="relative h-[88vh] min-h-[560px] w-full overflow-hidden">
-        <img src={hotelExterior} alt="Mulugu Hotel exterior at dusk" className="absolute inset-0 h-full w-full object-cover" />
+<img
+  src={hotelExterior}
+  alt="Mulugu Hotel exterior at dusk"
+  className="absolute inset-0 h-full w-full object-cover"
+  style={{ objectPosition: "center 80%" }}
+/>
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/70" />
         <div className="relative z-10 container mx-auto flex h-full flex-col items-center justify-center px-4 text-center text-white">
           <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="text-xs uppercase tracking-[0.4em] text-gold">Welcome to {HOTEL.name.split(" & ")[0]}</motion.p>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-            className="mt-4 font-display text-4xl md:text-6xl font-bold leading-tight max-w-4xl">
-            Where Luxury Meets <span className="text-gradient-gold">Telangana Hospitality</span>
+            className="mt-4 font-display text-3xl md:text-5xl font-medium leading-tight max-w-4xl">
+            Where Luxury Meets <span className="text-gradient-silver">Telangana Hospitality</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
             className="mt-5 max-w-2xl text-base md:text-lg text-white/85">
-            Premium rooms, an award-winning family restaurant, and a perfect gateway to the temples, waterfalls and forests of Mulugu.
+            
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
             className="mt-8 flex flex-wrap items-center justify-center gap-3">

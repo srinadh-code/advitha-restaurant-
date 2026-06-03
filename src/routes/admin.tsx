@@ -1,3 +1,5 @@
+import API from "@/api/api";
+import { toast } from "sonner";
 import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { LayoutDashboard, CalendarCheck, Bed, UtensilsCrossed, Map, Image, Users, Star, UserCog, Receipt, BarChart3, Settings } from "lucide-react";
@@ -6,9 +8,22 @@ import { DashboardShell, StatCard, DataTable, type SidebarItem } from "@/compone
 import { ROOMS, FOODS, TOURISM, REVIEWS } from "@/lib/mockData";
 import { Toaster } from "@/components/ui/sonner";
 
+
+
+
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Admin Dashboard — Mulugu Hotel" }, { name: "description", content: "Mulugu Hotel admin dashboard." }]}),
-  component: () => <AuthProvider><AdminGuard /><Toaster /></AuthProvider>,
+  head: () => ({
+    meta: [
+      { title: "Admin Dashboard — Mulugu Hotel" },
+      { name: "description", content: "Mulugu Hotel admin dashboard." }
+    ]
+  }),
+  component: () => (
+    <>
+      <AdminGuard />
+      <Toaster />
+    </>
+  ),
 });
 
 const items: SidebarItem[] = [
@@ -46,7 +61,8 @@ function AdminInner() {
       {active === "customers" && <CustomersView />}
       {active === "reviews" && <ReviewsView />}
       {active === "staff" && <Placeholder title="Manage Staff" desc="Add/edit hotel staff records and roles." />}
-      {active === "receptionists" && <Placeholder title="Manage Receptionists" desc="Manage receptionist accounts and permissions." />}
+      {/* {active === "receptionists" && <Placeholder title="Manage Receptionists" desc="Manage receptionist accounts and permissions." />} */}
+      {active === "receptionists" && <ReceptionistsView />}
       {active === "reports" && <ReportsView />}
       {active === "settings" && <Placeholder title="System Settings" desc="Property settings, taxes, payment options and content." />}
     </DashboardShell>
@@ -139,4 +155,253 @@ function Placeholder({ title, desc }: { title: string; desc: string }) {
       <button className="mt-4 rounded-md gradient-gold px-5 py-2 text-sm font-semibold text-gold-foreground">+ Add New</button>
     </div>
   );
+}
+
+function ReceptionistsView() {
+  const [form, setForm] = useState({
+  first_name: "",
+  last_name: "",
+  email: "",
+  phone_number: "",
+  password: "",
+});
+  const [showForm, setShowForm] = useState(false);
+  const [errors, setErrors] = useState({
+  first_name: "",
+  email: "",
+  phone_number: "",
+  password: "",
+});
+const validate = () => {
+  const newErrors = {
+    first_name: "",
+    email: "",
+    phone_number: "",
+    password: "",
+  };
+
+  let isValid = true;
+
+  if (!form.first_name.trim()) {
+    newErrors.first_name = "First name is required";
+    isValid = false;
+  }
+
+  if (!form.email.trim()) {
+    newErrors.email = "Email is required";
+    isValid = false;
+  } else if (
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
+  ) {
+    newErrors.email = "Enter valid email";
+    isValid = false;
+  }
+
+  if (!form.phone_number.trim()) {
+    newErrors.phone_number = "Phone number is required";
+    isValid = false;
+  } else if (!/^\d{10}$/.test(form.phone_number)) {
+    newErrors.phone_number = "Phone number must be 10 digits";
+    isValid = false;
+  }
+
+  if (!form.password.trim()) {
+    newErrors.password = "Password is required";
+    isValid = false;
+  } else if (form.password.length < 4) {
+    newErrors.password = "Password must be more than 3 characters";
+    isValid = false;
+  }
+
+  setErrors(newErrors);
+  return isValid;
+};
+  // const createReceptionist = async () => {
+  // try {
+  const createReceptionist = async () => {
+
+  if (!validate()) {
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem("access");
+
+    await API.post(
+      "/receptionists/create/",
+      form,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    toast.success("Receptionist created successfully");
+
+    setShowForm(false);
+
+    setForm({
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone_number: "",
+      password: "",
+    });
+
+  } catch (error: any) {
+  console.log(error.response?.data);
+  toast.error("Failed to create receptionist");
+}
+};
+
+  return (
+    <div className="rounded-2xl bg-card border border-border p-8 shadow-soft text-center">
+      <h3 className="font-display text-2xl font-bold">
+        Manage Receptionists
+      </h3>
+
+      <p className="mt-2 text-sm text-muted-foreground">
+        Manage receptionist accounts and permissions.
+      </p>
+
+      <button
+        onClick={() => setShowForm(true)}
+        className="mt-4 rounded-md gradient-gold px-5 py-2 text-sm font-semibold text-gold-foreground"
+      >
+        + Add New
+      </button>
+
+      {showForm && (
+        <div className="mt-6 space-y-3 max-w-md mx-auto">
+
+  {/* First Name */}
+  <div>
+    <input
+      className="w-full border rounded p-2"
+      placeholder="First Name"
+      value={form.first_name}
+      onChange={(e) => {
+        setForm({
+          ...form,
+          first_name: e.target.value,
+        });
+
+        setErrors({
+          ...errors,
+          first_name: "",
+        });
+      }}
+    />
+
+    {errors.first_name && (
+      <p className="text-red-500 text-xs mt-1 text-left">
+        {errors.first_name}
+      </p>
+    )}
+  </div>
+
+  {/* Last Name */}
+  <input
+    className="w-full border rounded p-2"
+    placeholder="Last Name"
+    value={form.last_name}
+    onChange={(e) =>
+      setForm({
+        ...form,
+        last_name: e.target.value,
+      })
+    }
+  />
+
+  {/* Email */}
+  <div>
+    <input
+      className="w-full border rounded p-2"
+      placeholder="Email"
+      value={form.email}
+      onChange={(e) => {
+        setForm({
+          ...form,
+          email: e.target.value,
+        });
+
+        setErrors({
+          ...errors,
+          email: "",
+        });
+      }}
+    />
+
+    {errors.email && (
+      <p className="text-red-500 text-xs mt-1 text-left">
+        {errors.email}
+      </p>
+    )}
+  </div>
+
+  {/* Phone Number */}
+  <div>
+    <input
+      className="w-full border rounded p-2"
+      placeholder="Phone Number"
+      value={form.phone_number}
+      onChange={(e) => {
+        setForm({
+          ...form,
+          phone_number: e.target.value,
+        });
+
+        setErrors({
+          ...errors,
+          phone_number: "",
+        });
+      }}
+    />
+
+    {errors.phone_number && (
+      <p className="text-red-500 text-xs mt-1 text-left">
+        {errors.phone_number}
+      </p>
+    )}
+  </div>
+
+  {/* Password */}
+  <div>
+    <input
+      className="w-full border rounded p-2"
+      placeholder="Password"
+      type="password"
+      value={form.password}
+      onChange={(e) => {
+        setForm({
+          ...form,
+          password: e.target.value,
+        });
+
+        setErrors({
+          ...errors,
+          password: "",
+        });
+      }}
+    />
+
+    {errors.password && (
+      <p className="text-red-500 text-xs mt-1 text-left">
+        {errors.password}
+      </p>
+    )}
+  </div>
+
+  <button
+    onClick={createReceptionist}
+    className="w-full rounded-md gradient-gold py-2"
+  >
+    Create Receptionist
+  </button>
+
+</div>
+)}
+</div>
+);
 }
