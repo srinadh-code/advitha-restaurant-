@@ -820,22 +820,22 @@ function Placeholder({ title, desc }: { title: string; desc: string }) {
     </div>
   );
 }
-
 function ReceptionistsView() {
-  const [form, setForm] = useState({
-  first_name: "",
-  last_name: "",
-  email: "",
-  phone_number: "",
-  password: "",
-});
-  const [showForm, setShowForm] = useState(false);
-  const [errors, setErrors] = useState({
-  first_name: "",
-  email: "",
-  phone_number: "",
-  password: "",
-});
+   const [form, setForm] = useState({
+   first_name: "",
+   last_name: "",
+   email: "",
+   phone_number: "",
+   password: "",
+ });
+   const [showForm, setShowForm] = useState(false);
+   const [receptionists, setReceptionists] = useState<any[]>([]);
+   const [errors, setErrors] = useState({
+   first_name: "",
+   email: "",
+   phone_number: "",
+   password: "",
+ });
 const validate = () => {
   const newErrors = {
     first_name: "",
@@ -875,14 +875,74 @@ const validate = () => {
   } else if (form.password.length < 4) {
     newErrors.password = "Password must be more than 3 characters";
     isValid = false;
-  }
+ }
 
-  setErrors(newErrors);
-  return isValid;
-};
-  // const createReceptionist = async () => {
-  // try {
-  const createReceptionist = async () => {
+   setErrors(newErrors);
+   return isValid;
+ };
+
+const fetchReceptionists = async () => {
+  try {
+    const token = localStorage.getItem("access");
+
+    const res = await API.get(
+      "/receptionists/create/",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setReceptionists(res.data);
+  } catch (error) {
+    console.log(error);
+  }
+ };
+ useEffect(() => {
+   fetchReceptionists();
+ }, []);
+//  const createReceptionist = async () => {
+//  try {
+//    const createReceptionist = async () => {
+
+//   if (!validate()) {
+//     return;
+//   }
+
+//   try {
+//     const token = localStorage.getItem("access");
+
+//     await API.post(
+//       "/receptionists/create/",
+//       form,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       }
+//     );
+
+//     toast.success("Receptionist created successfully");
+//     fetchReceptionists();
+
+//     setShowForm(false);
+
+//     setForm({
+//       first_name: "",
+//       last_name: "",
+//       email: "",
+//       phone_number: "",
+//       password: "",
+//     });
+
+//   } catch (error: any) {
+//   console.log(error.response?.data);
+//   toast.error("Failed to create receptionist");
+// }
+// };
+
+const createReceptionist = async () => {
 
   if (!validate()) {
     return;
@@ -903,6 +963,8 @@ const validate = () => {
 
     toast.success("Receptionist created successfully");
 
+    fetchReceptionists();
+
     setShowForm(false);
 
     setForm({
@@ -914,10 +976,35 @@ const validate = () => {
     });
 
   } catch (error: any) {
-  console.log(error.response?.data);
-  toast.error("Failed to create receptionist");
-}
+    console.log(error.response?.data);
+    toast.error("Failed to create receptionist");
+  }
 };
+const deleteReceptionist = async (id: number) => {
+  try {
+    const token = localStorage.getItem("access");
+
+    await API.delete(
+      `/receptionists/${id}/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    toast.success(
+      "Receptionist deleted successfully"
+    );
+
+    fetchReceptionists();
+  } catch (error) {
+    console.log(error);
+    toast.error(
+      "Failed to delete receptionist"
+    );
+  }};
+
 
   return (
     <div className="rounded-2xl bg-card border border-border p-8 shadow-soft text-center">
@@ -929,45 +1016,45 @@ const validate = () => {
         Manage receptionist accounts and permissions.
       </p>
 
-      <button
-        onClick={() => setShowForm(true)}
+    <button
+         onClick={() => setShowForm(true)}
         className="mt-4 rounded-md gradient-gold px-5 py-2 text-sm font-semibold text-gold-foreground"
-      >
-        + Add New
-      </button>
+       >
+         + Add New
+       </button>
 
       {showForm && (
-        <div className="mt-6 space-y-3 max-w-md mx-auto">
+         <div className="mt-6 space-y-3 max-w-md mx-auto">
 
   {/* First Name */}
-  <div>
-    <input
-      className="w-full border rounded p-2"
-      placeholder="First Name"
-      value={form.first_name}
-      onChange={(e) => {
-        setForm({
-          ...form,
-          first_name: e.target.value,
-        });
+   <div>
+     <input
+       className="w-full border rounded p-2"
+       placeholder="First Name"
+       value={form.first_name}
+       onChange={(e) => {
+         setForm({
+           ...form,
+           first_name: e.target.value,
+         });
 
-        setErrors({
-          ...errors,
-          first_name: "",
-        });
-      }}
-    />
+         setErrors({
+           ...errors,
+           first_name: "",
+         });
+       }}
+     />
 
-    {errors.first_name && (
-      <p className="text-red-500 text-xs mt-1 text-left">
-        {errors.first_name}
-      </p>
-    )}
-  </div>
+     {errors.first_name && (
+       <p className="text-red-500 text-xs mt-1 text-left">
+         {errors.first_name}
+       </p>
+     )}
+   </div>
 
-  {/* Last Name */}
-  <input
-    className="w-full border rounded p-2"
+   {/* Last Name */}
+   <input
+     className="w-full border rounded p-2"
     placeholder="Last Name"
     value={form.last_name}
     onChange={(e) =>
@@ -1067,6 +1154,304 @@ const validate = () => {
 </div>
 )}
 
+{receptionists.length > 0 ? (
+  <div className="mt-8 overflow-hidden rounded-xl border">
+    <table className="w-full">
+      <thead>
+        <tr className="bg-gray-100">
+          <th className="p-3 text-left">Name</th>
+          <th className="p-3 text-left">Email</th>
+          <th className="p-3 text-left">Phone</th>
+          <th className="p-3 text-left">Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {receptionists.map((item: any) => (
+          <tr key={item.id} className="border-t">
+            <td className="p-3">
+              {item.first_name} {item.last_name}
+            </td>
+
+            <td className="p-3">
+              {item.email}
+            </td>
+
+            <td className="p-3">
+              {item.phone_number}
+            </td>
+
+            <td className="p-3">
+              <button
+                onClick={() => deleteReceptionist(item.id)}
+                className="rounded bg-red-500 px-3 py-1 text-white"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+) : (
+  <div className="mt-8 rounded-xl border border-dashed p-8 text-center text-muted-foreground">
+    No receptionists added yet
+  </div>
+)}
+
 </div>
 );
-}
+ }
+// function ReceptionistsView() {
+//   const [form, setForm] = useState({
+//   first_name: "",
+//   last_name: "",
+//   email: "",
+//   phone_number: "",
+//   password: "",
+// });
+//   const [showForm, setShowForm] = useState(false);
+//   const [errors, setErrors] = useState({
+//   first_name: "",
+//   email: "",
+//   phone_number: "",
+//   password: "",
+// });
+// const validate = () => {
+//   const newErrors = {
+//     first_name: "",
+//     email: "",
+//     phone_number: "",
+//     password: "",
+//   };
+
+//   let isValid = true;
+
+//   if (!form.first_name.trim()) {
+//     newErrors.first_name = "First name is required";
+//     isValid = false;
+//   }
+
+//   if (!form.email.trim()) {
+//     newErrors.email = "Email is required";
+//     isValid = false;
+//   } else if (
+//     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
+//   ) {
+//     newErrors.email = "Enter valid email";
+//     isValid = false;
+//   }
+
+//   if (!form.phone_number.trim()) {
+//     newErrors.phone_number = "Phone number is required";
+//     isValid = false;
+//   } else if (!/^\d{10}$/.test(form.phone_number)) {
+//     newErrors.phone_number = "Phone number must be 10 digits";
+//     isValid = false;
+//   }
+
+//   if (!form.password.trim()) {
+//     newErrors.password = "Password is required";
+//     isValid = false;
+//   } else if (form.password.length < 4) {
+//     newErrors.password = "Password must be more than 3 characters";
+//     isValid = false;
+//   }
+
+//   setErrors(newErrors);
+//   return isValid;
+// };
+//   // const createReceptionist = async () => {
+//   // try {
+//   const createReceptionist = async () => {
+
+//   if (!validate()) {
+//     return;
+//   }
+
+//   try {
+//     const token = localStorage.getItem("access");
+
+//     await API.post(
+//       "/receptionists/create/",
+//       form,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       }
+//     );
+
+//     toast.success("Receptionist created successfully");
+
+//     setShowForm(false);
+
+//     setForm({
+//       first_name: "",
+//       last_name: "",
+//       email: "",
+//       phone_number: "",
+//       password: "",
+//     });
+
+//   } catch (error: any) {
+//   console.log(error.response?.data);
+//   toast.error("Failed to create receptionist");
+// }
+// };
+
+//   return (
+//     <div className="rounded-2xl bg-card border border-border p-8 shadow-soft text-center">
+//       <h3 className="font-display text-2xl font-bold">
+//         Manage Receptionists
+//       </h3>
+
+//       <p className="mt-2 text-sm text-muted-foreground">
+//         Manage receptionist accounts and permissions.
+//       </p>
+
+//       <button
+//         onClick={() => setShowForm(true)}
+//         className="mt-4 rounded-md gradient-gold px-5 py-2 text-sm font-semibold text-gold-foreground"
+//       >
+//         + Add New
+//       </button>
+
+//       {showForm && (
+//         <div className="mt-6 space-y-3 max-w-md mx-auto">
+
+//   {/* First Name */}
+//   <div>
+//     <input
+//       className="w-full border rounded p-2"
+//       placeholder="First Name"
+//       value={form.first_name}
+//       onChange={(e) => {
+//         setForm({
+//           ...form,
+//           first_name: e.target.value,
+//         });
+
+//         setErrors({
+//           ...errors,
+//           first_name: "",
+//         });
+//       }}
+//     />
+
+//     {errors.first_name && (
+//       <p className="text-red-500 text-xs mt-1 text-left">
+//         {errors.first_name}
+//       </p>
+//     )}
+//   </div>
+
+//   {/* Last Name */}
+//   <input
+//     className="w-full border rounded p-2"
+//     placeholder="Last Name"
+//     value={form.last_name}
+//     onChange={(e) =>
+//       setForm({
+//         ...form,
+//         last_name: e.target.value,
+//       })
+//     }
+//   />
+
+//   {/* Email */}
+//   <div>
+//     <input
+//       className="w-full border rounded p-2"
+//       placeholder="Email"
+//       value={form.email}
+//       onChange={(e) => {
+//         setForm({
+//           ...form,
+//           email: e.target.value,
+//         });
+
+//         setErrors({
+//           ...errors,
+//           email: "",
+//         });
+//       }}
+//     />
+
+//     {errors.email && (
+//       <p className="text-red-500 text-xs mt-1 text-left">
+//         {errors.email}
+//       </p>
+//     )}
+//   </div>
+
+//   {/* Phone Number */}
+//   <div>
+//     <input
+//       className="w-full border rounded p-2"
+//       placeholder="Phone Number"
+//       value={form.phone_number}
+//       onChange={(e) => {
+//         setForm({
+//           ...form,
+//           phone_number: e.target.value,
+//         });
+
+//         setErrors({
+//           ...errors,
+//           phone_number: "",
+//         });
+//       }}
+//     />
+
+//     {errors.phone_number && (
+//       <p className="text-red-500 text-xs mt-1 text-left">
+//         {errors.phone_number}
+//       </p>
+//     )}
+//   </div>
+
+//   {/* Password */}
+//   <div>
+//     <input
+//       className="w-full border rounded p-2"
+//       placeholder="Password"
+//       type="password"
+//       value={form.password}
+//       onChange={(e) => {
+//         setForm({
+//           ...form,
+//           password: e.target.value,
+//         });
+
+//         setErrors({
+//           ...errors,
+//           password: "",
+//         });
+//       }}
+//     />
+
+//     {errors.password && (
+//       <p className="text-red-500 text-xs mt-1 text-left">
+//         {errors.password}
+//       </p>
+//     )}
+//   </div>
+
+//   <button
+//     onClick={createReceptionist}
+//     className="w-full rounded-md gradient-gold py-2"
+//   >
+//     Create Receptionist
+//   </button>
+
+// </div>
+// )}
+
+// </div>
+// );
+// }
+
+
+
