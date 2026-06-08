@@ -156,12 +156,12 @@ function RestaurantPage() {
             Loading Menu...
           </div>
         ) : (
-          <motion.div
+          <div
             layout
             className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
           >
             {items.map((food, i) => (
-              <motion.article
+              <article
                 key={food.id}
                 layout
                 initial={{ opacity: 0, y: 10 }}
@@ -194,9 +194,9 @@ function RestaurantPage() {
                     {food.description}
                   </p>
                 </div>
-              </motion.article>
+              </article>
             ))}
-          </motion.div>
+          </div>
         )}
       </section>
 
