@@ -5,3 +5,17 @@ const API = axios.create({
 });
 
 export default API;
+
+
+
+export async function getBookings() {
+  const response = await fetch(
+    "http://127.0.0.1:8000/bookings/"
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch bookings");
+  }
+
+  return response.json();
+}

@@ -78,7 +78,7 @@ const fetchRooms = async () => {
   src={hotelExterior}
   alt="Mulugu Hotel exterior at dusk"
   className="absolute inset-0 h-full w-full object-cover"
-  style={{ objectPosition: "center 80%" }}
+  style={{ objectPosition: "center 20%" }}
 />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/70" />
         <div className="relative z-10 container mx-auto flex h-full flex-col items-center justify-center px-4 text-center text-white">

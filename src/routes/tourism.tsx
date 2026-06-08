@@ -56,8 +56,6 @@
 // }
 
 
-
-
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteLayout } from "@/components/layout/SiteLayout";
@@ -83,6 +81,8 @@ interface TourismPlace {
   image: string;
   distance: string;
   hours: string;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export const Route = createFileRoute("/tourism")({
@@ -212,6 +212,21 @@ function TourismPage() {
                       {t.hours}
                     </span>
                   </div>
+                  <button
+  onClick={() => {
+    if (t.latitude && t.longitude) {
+      window.open(
+        `https://www.google.com/maps/dir/?api=1&destination=${t.latitude},${t.longitude}`,
+        "_blank"
+      );
+    } else {
+      alert("Location coordinates not available");
+    }
+  }}
+  className="mt-4 w-full rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+>
+  Get Directions
+</button>
                 </div>
               </article>
             ))}

@@ -102,14 +102,116 @@ function DashboardView() {
     </div>
   );
 }
+// function BookingsView() {
+//   return <DataTable columns={["ID", "Guest", "Email", "Room", "Check-In", "Check-Out", "Status"]} rows={[
+//     ["#B001", "Ramesh K.", "ramesh@x.com", "Deluxe", "2026-05-30", "2026-06-01", "Confirmed"],
+//     ["#B002", "Lakshmi P.", "lakshmi@x.com", "Family Suite", "2026-05-31", "2026-06-03", "Pending"],
+//     ["#B003", "Arjun M.", "arjun@x.com", "Executive", "2026-06-02", "2026-06-04", "Confirmed"],
+//     ["#B004", "Sneha V.", "sneha@x.com", "Premium", "2026-06-05", "2026-06-07", "Cancelled"],
+//   ]} />;
+// }
 function BookingsView() {
-  return <DataTable columns={["ID", "Guest", "Email", "Room", "Check-In", "Check-Out", "Status"]} rows={[
-    ["#B001", "Ramesh K.", "ramesh@x.com", "Deluxe", "2026-05-30", "2026-06-01", "Confirmed"],
-    ["#B002", "Lakshmi P.", "lakshmi@x.com", "Family Suite", "2026-05-31", "2026-06-03", "Pending"],
-    ["#B003", "Arjun M.", "arjun@x.com", "Executive", "2026-06-02", "2026-06-04", "Confirmed"],
-    ["#B004", "Sneha V.", "sneha@x.com", "Premium", "2026-06-05", "2026-06-07", "Cancelled"],
-  ]} />;
+  const [bookings, setBookings] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/bookings/")
+      .then((res) => res.json())
+      .then((data) => {
+        setBookings(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  return (
+    <div className="space-y-6">
+
+      <div className="flex justify-between items-center">
+        <h2 className="text-3xl font-bold text-[#3E2414]">
+          Booking Management
+        </h2>
+
+        <div className="bg-[#C69214] text-white px-4 py-2 rounded-xl">
+          Total Bookings: {bookings.length}
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl shadow-md border overflow-hidden">
+
+        <table className="w-full">
+
+          <thead className="bg-[#F5E7C5]">
+
+            <tr>
+              <th className="p-4 text-left">ID</th>
+              <th className="p-4 text-left">Guest</th>
+              <th className="p-4 text-left">Email</th>
+              <th className="p-4 text-left">Phone</th>
+              <th className="p-4 text-left">Room</th>
+              <th className="p-4 text-left">Check In</th>
+              <th className="p-4 text-left">Check Out</th>
+              <th className="p-4 text-left">Guests</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            {bookings.map((booking: any) => (
+
+              <tr
+                key={booking.id}
+                className="border-b hover:bg-gray-50"
+              >
+
+                <td className="p-4">
+                  #{booking.id}
+                </td>
+
+                <td className="p-4 font-medium">
+                  {booking.full_name}
+                </td>
+
+                <td className="p-4">
+                  {booking.email}
+                </td>
+
+                <td className="p-4">
+                  {booking.phone}
+                </td>
+
+                <td className="p-4">
+                  {booking.room_name || booking.room}
+                </td>
+
+                <td className="p-4">
+                  {booking.check_in}
+                </td>
+
+                <td className="p-4">
+                  {booking.check_out}
+                </td>
+
+                <td className="p-4">
+                  {booking.guests}
+                </td>
+
+              </tr>
+
+            ))}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+  );
 }
+  
+  
 
 function RoomsView() {
   const [rooms, setRooms] = useState<any[]>([]);
