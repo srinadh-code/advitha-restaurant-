@@ -7,7 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/lib/auth";
 function NotFoundComponent() {
@@ -78,13 +78,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Luxury stay, family dining and tourism in Mulugu." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      // { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@AdvithaHotel" },
     ],
     links: [
       {
-        rel: "stylesheet",
-        href: appCss,
-      },
+    rel: "icon",
+    type: "image/png",
+    href: "/coloue ad.png",
+  },
+  {
+    rel: "stylesheet",
+    href: appCss,
+  },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" },
@@ -115,8 +121,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 //   return (
 //     <QueryClientProvider client={queryClient}>
-//       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-//       <Outlet />
+//       <AuthProvider>
+//         <Outlet />
+//       </AuthProvider>
 //     </QueryClientProvider>
 //   );
 // }
@@ -124,10 +131,17 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Outlet />
-      </AuthProvider>
-    </QueryClientProvider>
+    <GoogleOAuthProvider
+      clientId="371899969000-efr3koa7p1ob1m0044v5dtpmm9p006lj.apps.googleusercontent.com"
+    >
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Outlet />
+        </AuthProvider>
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
   );
 }
+
+
+

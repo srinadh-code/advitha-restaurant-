@@ -75,7 +75,7 @@ type GalleryImage = {
   id: number;
   title: string;
   category: string;
-  image: string;
+  image_url: string;
 };
 
 export const Route = createFileRoute("/gallery")({
@@ -180,11 +180,11 @@ function GalleryPage() {
             {filteredImages.map((img) => (
               <button
                 key={img.id}
-                onClick={() => setOpen(img.image)}
+                onClick={() => setOpen(img.image_url)}
                 className="group block overflow-hidden rounded-2xl shadow-soft"
               >
                 <img
-                  src={img.image}
+                  src={img.image_url}
                   alt={img.title}
                   className="h-64 w-full object-cover transition group-hover:scale-105"
                 />

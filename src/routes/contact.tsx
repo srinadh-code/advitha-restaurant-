@@ -83,7 +83,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-
+import HotelMap from "../components/HotelMap";
 import API from "@/api/api";
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
@@ -249,12 +249,16 @@ function ContactPage() {
               </div>
             </div>
 
-            <iframe
+            {/* <iframe
               title="Map"
               src={HOTEL.mapsEmbed}
               loading="lazy"
               className="h-72 w-full rounded-2xl border border-border shadow-soft"
-            />
+            /> */}
+
+            <div className="h-72 w-full rounded-2xl overflow-hidden border border-border shadow-soft">
+  <HotelMap />
+</div>
           </div>
 
           {/* Contact Form */}

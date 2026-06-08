@@ -22,14 +22,22 @@ export function Navbar() {
     <header className="sticky top-0 z-40 bg-background/85 backdrop-blur border-b border-border">
       <div className="container mx-auto flex items-center justify-between gap-4 px-4 py-3">
         <Link to="/" className="flex items-center gap-2">
-          <span className="grid h-10 w-10 place-items-center rounded-full gradient-gold text-gold-foreground shadow-soft">
-            <Crown className="h-5 w-5" />
-          </span>
-          <span className="flex flex-col leading-tight">
-            <span className="font-display text-lg font-bold tracking-wide">{HOTEL.name.split(" & ")[0]}</span>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-gold">& Restaurant</span>
-          </span>
-        </Link>
+  <img
+    src="/dark.png"
+    alt="Advitha Hotel"
+    className="h-14 w- rounded-full object-cover"
+  />
+
+  <span className="flex flex-col leading-tight">
+    <span className="font-display text-lg font-bold tracking-wide">
+      {HOTEL.name.split(" & ")[0]}
+    </span>
+
+    <span className="text-[10px] uppercase tracking-[0.2em] text-gold">
+      & Restaurant
+    </span>
+  </span>
+</Link>
 
         <nav className="hidden lg:flex items-center gap-1">
           {links.map((l) => (

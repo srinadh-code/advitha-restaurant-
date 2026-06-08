@@ -68,7 +68,6 @@ export type AuthUser = {
   last_name?: string;
   role: Role;
 };
-
 type Ctx = {
   user: AuthUser | null;
 
@@ -90,8 +89,36 @@ type Ctx = {
     error?: string;
   }>;
 
+  setUser: React.Dispatch<
+    React.SetStateAction<AuthUser | null>
+  >;
+
   logout: () => void;
 };
+
+// type Ctx = {
+//   user: AuthUser | null;
+
+//   login: (
+//     email: string,
+//     password: string
+//   ) => Promise<{
+//     ok: boolean;
+//     error?: string;
+//     role?: Role;
+//   }>;
+
+//   signup: (
+//     first_name: string,
+//     email: string,
+//     password: string
+//   ) => Promise<{
+//     ok: boolean;
+//     error?: string;
+//   }>;
+
+//   logout: () => void;
+// };
 
 const AuthContext = createContext<Ctx | null>(null);
 
@@ -151,7 +178,7 @@ export function AuthProvider({
       setUser(loggedUser);
 
       localStorage.setItem(
-        USER_KEY,
+        "mulugu.auth",
         JSON.stringify(loggedUser)
       );
 
@@ -204,6 +231,7 @@ export function AuthProvider({
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         login,
         signup,
         logout,

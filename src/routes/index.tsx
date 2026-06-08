@@ -5,8 +5,9 @@ import { Bed, UtensilsCrossed, Wifi, Car, ConciergeBell, PartyPopper, Star, Arro
 import hotelExterior from "@/assets/hotel-exterior.jpg";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { SectionHeading } from "@/components/SectionHeading";
-import { ROOMS, FOODS, TOURISM, REVIEWS, HOTEL } from "@/lib/mockData";
-
+import { TOURISM, REVIEWS, HOTEL } from "@/lib/mockData";
+import { useEffect, useState } from "react";
+import API from "@/api/api";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -22,10 +23,51 @@ export const Route = createFileRoute("/")({
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Bed, UtensilsCrossed, Wifi, Car, ConciergeBell, PartyPopper,
 };
+interface Food {
+  id: number;
+  name: string;
+  category: number;
+  category_name: string;
+  price: string;
+  description: string;
+  image_url: string;
+}
+
+interface Room {
+  id: number;
+  title: string;
+  room_type: string;
+  image: string;
+  description: string;
+  price: string;
+}
 
 function Index() {
-  const featuredRooms = ROOMS.slice(0, 3);
-  const featuredFoods = FOODS.slice(0, 6);
+  // const featuredRooms = ROOMS.slice(0, 3);
+  const [featuredRooms, setFeaturedRooms] = useState<Room[]>([]);
+  const [featuredFoods, setFeaturedFoods] = useState<Food[]>([]);
+
+useEffect(() => {
+  fetchFoods();
+  fetchRooms();
+}, []);
+
+const fetchFoods = async () => {
+  try {
+    const response = await API.get("/api/foods/");
+    setFeaturedFoods(response.data.slice(0, 6));
+  } catch (error) {
+    console.error("Error fetching foods:", error);
+  }
+};
+const fetchRooms = async () => {
+  try {
+    const response = await API.get("/rooms/");
+    setFeaturedRooms(response.data.slice(0, 3));
+  } catch (error) {
+    console.error("Error fetching rooms:", error);
+  }
+};
   const featuredTourism = TOURISM.slice(0, 4);
 
   return (
@@ -73,9 +115,9 @@ function Index() {
             <motion.div key={f.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.06 }}
               className="group flex gap-4 overflow-hidden rounded-2xl bg-card border border-border p-3 shadow-soft hover:shadow-luxury transition">
-              <img src={f.image} alt={f.name} className="h-24 w-28 flex-none rounded-xl object-cover" />
+              <img src={f.image_url} alt={f.name} className="h-24 w-28 flex-none rounded-xl object-cover" />
               <div className="flex flex-col justify-center">
-                <span className="text-[10px] uppercase tracking-widest text-gold font-semibold">{f.category}</span>
+                <span className="text-[10px] uppercase tracking-widest text-gold font-semibold">{f.category_name}</span>
                 <h3 className="font-display text-lg font-bold leading-tight">{f.name}</h3>
                 <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{f.description}</p>
               </div>
@@ -102,10 +144,14 @@ function Index() {
                 viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                 className="group overflow-hidden rounded-2xl bg-card border border-border shadow-soft hover:shadow-luxury transition">
                 <div className="relative h-56 overflow-hidden">
-                  <img src={r.image} alt={r.name} className="h-full w-full object-cover transition group-hover:scale-105" />
+                  <img
+  src={`http://127.0.0.1:8000${r.image}`}
+  alt={r.title}
+  className="h-full w-full object-cover transition group-hover:scale-105"
+/>
                 </div>
                 <div className="p-5">
-                  <h3 className="font-display text-xl font-bold">{r.name}</h3>
+                  <h3 className="font-display text-xl font-bold">{r.title}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{r.description}</p>
                   <Link to="/rooms" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
                     View Details <ArrowRight className="h-3.5 w-3.5" />
