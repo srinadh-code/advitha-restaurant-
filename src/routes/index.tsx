@@ -5,7 +5,7 @@ import { Bed, UtensilsCrossed, Wifi, Car, ConciergeBell, PartyPopper, Star, Arro
 import hotelExterior from "@/assets/hotel-exterior.jpg";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { SectionHeading } from "@/components/SectionHeading";
-import { TOURISM, REVIEWS, HOTEL } from "@/lib/mockData";
+import { REVIEWS, HOTEL } from "@/lib/mockData";
 import { useEffect, useState } from "react";
 import API from "@/api/api";
 export const Route = createFileRoute("/")({
@@ -41,15 +41,26 @@ interface Room {
   description: string;
   price: string;
 }
+interface TourismPlace {
+  id: number;
+  name: string;
+  category: string;
+  description: string;
+  image: string;
+  distance: string;
+}
 
 function Index() {
   // const featuredRooms = ROOMS.slice(0, 3);
   const [featuredRooms, setFeaturedRooms] = useState<Room[]>([]);
   const [featuredFoods, setFeaturedFoods] = useState<Food[]>([]);
+  const [featuredTourism, setFeaturedTourism] =
+  useState<TourismPlace[]>([]);
 
 useEffect(() => {
   fetchFoods();
   fetchRooms();
+  fetchTourismPlaces();
 }, []);
 
 const fetchFoods = async () => {
@@ -68,7 +79,23 @@ const fetchRooms = async () => {
     console.error("Error fetching rooms:", error);
   }
 };
-  const featuredTourism = TOURISM.slice(0, 4);
+const fetchTourismPlaces = async () => {
+  try {
+    const response = await API.get(
+      "/api/tourism/places/"
+    );
+
+    setFeaturedTourism(
+      response.data.slice(0, 4)
+    );
+  } catch (error) {
+    console.error(
+      "Error fetching tourism places:",
+      error
+    );
+  }
+};
+
 
   return (
     <SiteLayout>

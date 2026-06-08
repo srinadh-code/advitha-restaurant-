@@ -2640,6 +2640,849 @@ function Placeholder({ title, desc }: { title: string; desc: string }) {
 
 
 
+// function StaffView() {
+//   const [form, setForm] = useState({
+//     first_name: "",
+//     last_name: "",
+//     email: "",
+//     phone_number: "",
+//     salary: "",
+//     password: "",
+//   });
+
+//   const [showForm, setShowForm] = useState(false);
+
+//   const [staff, setStaff] = useState<any[]>([]);
+
+//   const [errors, setErrors] = useState({
+//     first_name: "",
+//     email: "",
+//     phone_number: "",
+//     salary: "",
+//     password: "",
+//   });
+
+//   const validate = () => {
+//     const newErrors = {
+//       first_name: "",
+//       email: "",
+//       phone_number: "",
+//       salary: "",
+//       password: "",
+//     };
+
+//     let isValid = true;
+
+//     if (!form.first_name.trim()) {
+//       newErrors.first_name = "First name is required";
+//       isValid = false;
+//     }
+
+//     if (!form.email.trim()) {
+//       newErrors.email = "Email is required";
+//       isValid = false;
+//     } else if (
+//       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
+//     ) {
+//       newErrors.email = "Enter valid email";
+//       isValid = false;
+//     }
+
+//     if (!form.phone_number.trim()) {
+//       newErrors.phone_number = "Phone number is required";
+//       isValid = false;
+//     } else if (!/^\d{10}$/.test(form.phone_number)) {
+//       newErrors.phone_number = "Phone number must be 10 digits";
+//       isValid = false;
+//     }
+
+//     if (!form.salary.trim()) {
+//       newErrors.salary = "Salary is required";
+//       isValid = false;
+//     } else if (isNaN(Number(form.salary))) {
+//       newErrors.salary = "Salary must be a number";
+//       isValid = false;
+//     }
+
+//     if (!form.password.trim()) {
+//       newErrors.password = "Password is required";
+//       isValid = false;
+//     } else if (form.password.length < 4) {
+//       newErrors.password =
+//         "Password must be more than 3 characters";
+//       isValid = false;
+//     }
+
+//     setErrors(newErrors);
+
+//     return isValid;
+//   };
+
+//   const fetchStaff = async () => {
+//     try {
+//       const token = localStorage.getItem("access");
+
+//       const res = await API.get(
+//         "/staff/",
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+
+//       setStaff(res.data);
+
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchStaff();
+//   }, []);
+
+//   const createStaff = async () => {
+
+//     if (!validate()) {
+//       return;
+//     }
+
+//     try {
+//       const token = localStorage.getItem("access");
+
+//       await API.post(
+//         "/staff/",
+//         form,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+
+//       toast.success(
+//         "Staff created successfully"
+//       );
+
+//       fetchStaff();
+
+//       setShowForm(false);
+
+//       setForm({
+//         first_name: "",
+//         last_name: "",
+//         email: "",
+//         phone_number: "",
+//         salary: "",
+//         password: "",
+//       });
+
+//     } catch (error: any) {
+//       console.log(error.response?.data);
+
+//       toast.error(
+//         "Failed to create staff"
+//       );
+//     }
+//   };
+
+//   const deleteStaff = async (id: number) => {
+
+//     try {
+//       const token = localStorage.getItem("access");
+
+//       await API.delete(
+//         `/staff/${id}/`,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+//       console.log("Token:", localStorage.getItem("access"));
+
+//       toast.success(
+//         "Staff deleted successfully"
+//       );
+
+//       fetchStaff();
+
+//     } catch (error) {
+
+//       console.log(error);
+
+//       toast.error(
+//         "Failed to delete staff"
+//       );
+//     }
+//   };
+// const totalSalary = staff.reduce(
+//   (sum, item) => sum + Number(item.salary || 0),
+//   0
+// );
+//   return (
+//     <div className="rounded-2xl bg-card border border-border p-8 shadow-soft text-center">
+
+//       <h3 className="font-display text-2xl font-bold">
+//         Manage Staff
+//       </h3>
+
+//       <p className="mt-2 text-sm text-muted-foreground">
+//         Manage hotel staff accounts.
+//       </p>
+
+//       <button
+//         onClick={() => setShowForm(true)}
+//         className="mt-4 rounded-md gradient-gold px-5 py-2 text-sm font-semibold text-gold-foreground"
+//       >
+//         + Add New
+//       </button>
+
+//       {showForm && (
+
+//         <div className="mt-6 space-y-3 max-w-md mx-auto">
+
+//           <input
+//             className="w-full border rounded p-2"
+//             placeholder="First Name"
+//             value={form.first_name}
+//             onChange={(e) =>
+//               setForm({
+//                 ...form,
+//                 first_name: e.target.value,
+//               })
+//             }
+//           />
+
+//           {errors.first_name && (
+//             <p className="text-red-500 text-xs text-left">
+//               {errors.first_name}
+//             </p>
+//           )}
+
+//           <input
+//             className="w-full border rounded p-2"
+//             placeholder="Last Name"
+//             value={form.last_name}
+//             onChange={(e) =>
+//               setForm({
+//                 ...form,
+//                 last_name: e.target.value,
+//               })
+//             }
+//           />
+
+//           <input
+//             className="w-full border rounded p-2"
+//             placeholder="Email"
+//             value={form.email}
+//             onChange={(e) =>
+//               setForm({
+//                 ...form,
+//                 email: e.target.value,
+//               })
+//             }
+//           />
+
+//           {errors.email && (
+//             <p className="text-red-500 text-xs text-left">
+//               {errors.email}
+//             </p>
+//           )}
+
+//           <input
+//             className="w-full border rounded p-2"
+//             placeholder="Phone Number"
+//             value={form.phone_number}
+//             onChange={(e) =>
+//               setForm({
+//                 ...form,
+//                 phone_number: e.target.value,
+//               })
+//             }
+//           />
+
+//           {errors.phone_number && (
+//             <p className="text-red-500 text-xs text-left">
+//               {errors.phone_number}
+//             </p>
+//           )}
+//           <input
+//   type="number"
+//   className="w-full border rounded p-2"
+//   placeholder="Salary"
+//   value={form.salary}
+//   onChange={(e) =>
+//     setForm({
+//       ...form,
+//       salary: e.target.value,
+//     })
+//   }
+// />
+
+// {errors.salary && (
+//   <p className="text-red-500 text-xs text-left">
+//     {errors.salary}
+//   </p>
+// )}
+//           <input
+//             type="password"
+//             className="w-full border rounded p-2"
+//             placeholder="Password"
+//             value={form.password}
+//             onChange={(e) =>
+//               setForm({
+//                 ...form,
+//                 password: e.target.value,
+//               })
+//             }
+//           />
+
+//           {errors.password && (
+//             <p className="text-red-500 text-xs text-left">
+//               {errors.password}
+//             </p>
+//           )}
+
+//           <button
+//             onClick={createStaff}
+//             className="w-full rounded-md gradient-gold py-2"
+//           >
+//             Create Staff
+//           </button>
+
+//         </div>
+//       )}
+
+//       {staff.length > 0 ? (
+
+//         <div className="mt-8 overflow-hidden rounded-xl border">
+
+//             <div className="mt-8 mb-4 rounded-xl border bg-card p-4">
+//   <div className="flex justify-between items-center">
+    
+//     <div>
+//       <p className="text-sm text-muted-foreground">
+//         Total Staff
+//       </p>
+
+//       <p className="text-2xl font-bold">
+//         {staff.length}
+//       </p>
+//     </div>
+
+//     <div className="text-right">
+//       <p className="text-sm text-muted-foreground">
+//         Total Salary
+//       </p>
+
+//       <p className="text-2xl font-bold text-green-600">
+//         ₹{totalSalary.toLocaleString()}
+//       </p>
+//     </div>
+
+//   </div>
+// </div>
+//           <table className="w-full">
+
+//             <thead>
+//               <tr className="bg-gray-100">
+//                 <th className="p-3 text-left">
+//                   Name
+//                 </th>
+
+//                 <th className="p-3 text-left">
+//                   Email
+//                 </th>
+//                 <th>Salary</th>
+//                 <th className="p-3 text-left">
+//                   Phone
+//                 </th>
+
+//                 <th className="p-3 text-left">
+//                   Action
+//                 </th>
+//               </tr>
+//             </thead>
+
+//             <tbody>
+
+//               {staff.map((item: any) => (
+
+//                 <tr
+//                   key={item.id}
+//                   className="border-t"
+//                 >
+//                   <td className="p-3">
+//                     {item.first_name}{" "}
+//                     {item.last_name}
+//                   </td>
+
+//                   <td className="p-3">
+//                     {item.email}
+//                   </td>
+//                     <td>₹{item.salary}</td>
+//                   <td className="p-3">
+//                     {item.phone_number}
+//                   </td>
+
+//                   <td className="p-3">
+//                     <button
+//                       onClick={() =>
+//                         deleteStaff(item.id)
+//                       }
+//                       className="rounded bg-red-500 px-3 py-1 text-white"
+//                     >
+//                       Delete
+//                     </button>
+//                   </td>
+
+//                 </tr>
+
+//               ))}
+
+//             </tbody>
+
+//           </table>
+
+//         </div>
+
+//       ) : (
+
+//         <div className="mt-8 rounded-xl border border-dashed p-8 text-center text-muted-foreground">
+//           No staff added yet
+//         </div>
+
+//       )}
+
+//     </div>
+//   );
+// }
+
+
+
+
+// function ReceptionistsView() {
+//    const [form, setForm] = useState({
+//    first_name: "",
+//    last_name: "",
+//    email: "",
+//    phone_number: "",
+//    salary: "",
+//    password: "",
+//  });
+//    const [showForm, setShowForm] = useState(false);
+//    const [receptionists, setReceptionists] = useState<any[]>([]);
+//    const [errors, setErrors] = useState({
+//    first_name: "",
+//    email: "",
+//    phone_number: "",
+//    salary: "",
+//    password: "",
+//  });
+// const validate = () => {
+//   const newErrors = {
+//     first_name: "",
+//     email: "",
+//     phone_number: "",
+//     salary: "",
+//     password: "",
+//   };
+
+//   let isValid = true;
+
+
+//   if (!form.salary.trim()) {
+//   newErrors.salary = "Salary is required";
+//   isValid = false;
+// }else if(isNaN(Number(form.salary))){
+//   newErrors.salary = "Salary must be a number";
+//   isValid = false;
+// }
+//   if (!form.first_name.trim()) {
+//     newErrors.first_name = "First name is required";
+//     isValid = false;
+//   }
+
+//   if (!form.email.trim()) {
+//     newErrors.email = "Email is required";
+//     isValid = false;
+//   } else if (
+//     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
+//   ) {
+//     newErrors.email = "Enter valid email";
+//     isValid = false;
+//   }
+
+//   if (!form.phone_number.trim()) {
+//     newErrors.phone_number = "Phone number is required";
+//     isValid = false;
+//   } else if (!/^\d{10}$/.test(form.phone_number)) {
+//     newErrors.phone_number = "Phone number must be 10 digits";
+//     isValid = false;
+//   }
+
+//   if (!form.password.trim()) {
+//     newErrors.password = "Password is required";
+//     isValid = false;
+//   } else if (form.password.length < 4) {
+//     newErrors.password = "Password must be more than 3 characters";
+//     isValid = false;
+//  }
+
+//    setErrors(newErrors);
+//    return isValid;
+//  };
+
+// const fetchReceptionists = async () => {
+//   try {
+//     const token = localStorage.getItem("access");
+
+//     const res = await API.get(
+//       "/receptionists/create/",
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       }
+//     );
+
+//     setReceptionists(res.data);
+//   } catch (error) {
+//     console.log(error);
+//   }
+//  };
+//  useEffect(() => {
+//    fetchReceptionists();
+//  }, []);
+
+
+// const createReceptionist = async () => {
+
+//   if (!validate()) {
+//     return;
+//   }
+
+//   try {
+//     const token = localStorage.getItem("access");
+
+//     await API.post(
+//       "/receptionists/create/",
+//       form,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       }
+//     );
+
+//     toast.success("Receptionist created successfully");
+
+//     fetchReceptionists();
+
+//     setShowForm(false);
+
+//     setForm({
+//       first_name: "",
+//       last_name: "",
+//       email: "",
+//       phone_number: "",
+//       salary: "",
+//       password: "",
+//     });
+
+//   } 
+// catch (error: any) {
+//   console.log("ERROR:", error.response?.data);
+
+//   toast.error(
+//     JSON.stringify(error.response?.data)
+//   );
+// }
+// };
+// const deleteReceptionist = async (id: number) => {
+//   try {
+//     const token = localStorage.getItem("access");
+
+//     await API.delete(
+//       `/receptionists/${id}/`,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       }
+//     );
+
+//     toast.success(
+//       "Receptionist deleted successfully"
+//     );
+
+//     fetchReceptionists();
+//   } catch (error) {
+//     console.log(error);
+//     toast.error(
+//       "Failed to delete receptionist"
+//     );
+//   }};
+
+// const totalReceptionistSalary = receptionists.reduce(
+//   (sum, item) => sum + Number(item.salary || 0),
+//   0
+// );
+//   return (
+//     <div className="rounded-2xl bg-card border border-border p-8 shadow-soft text-center">
+//       <h3 className="font-display text-2xl font-bold">
+//         Manage Receptionists
+//       </h3>
+
+//       <p className="mt-2 text-sm text-muted-foreground">
+//         Manage receptionist accounts and permissions.
+//       </p>
+
+//     <button
+//          onClick={() => setShowForm(true)}
+//         className="mt-4 rounded-md gradient-gold px-5 py-2 text-sm font-semibold text-gold-foreground"
+//        >
+//          + Add New
+//        </button>
+
+//       {showForm && (
+//          <div className="mt-6 space-y-3 max-w-md mx-auto">
+
+//   {/* First Name */}
+//    <div>
+//      <input
+//        className="w-full border rounded p-2"
+//        placeholder="First Name"
+//        value={form.first_name}
+//        onChange={(e) => {
+//          setForm({
+//            ...form,
+//            first_name: e.target.value,
+//          });
+
+//          setErrors({
+//            ...errors,
+//            first_name: "",
+//          });
+//        }}
+//      />
+
+//      {errors.first_name && (
+//        <p className="text-red-500 text-xs mt-1 text-left">
+//          {errors.first_name}
+//        </p>
+//      )}
+//    </div>
+
+//    {/* Last Name */}
+//    <input
+//      className="w-full border rounded p-2"
+//     placeholder="Last Name"
+//     value={form.last_name}
+//     onChange={(e) =>
+//       setForm({
+//         ...form,
+//         last_name: e.target.value,
+//       })
+//     }
+//   />
+
+//   {/* Email */}
+//   <div>
+//     <input
+//       className="w-full border rounded p-2"
+//       placeholder="Email"
+//       value={form.email}
+//       onChange={(e) => {
+//         setForm({
+//           ...form,
+//           email: e.target.value,
+//         });
+
+//         setErrors({
+//           ...errors,
+//           email: "",
+//         });
+//       }}
+//     />
+
+//     {errors.email && (
+//       <p className="text-red-500 text-xs mt-1 text-left">
+//         {errors.email}
+//       </p>
+//     )}
+//   </div>
+//     <div>
+//   <input
+//     type="number"
+//     className="w-full border rounded p-2"
+//     placeholder="Salary"
+//     value={form.salary}
+//     onChange={(e) => {
+//       setForm({
+//         ...form,
+//         salary: e.target.value,
+//       });
+
+//       setErrors({
+//         ...errors,
+//         salary: "",
+//       });
+//     }}
+//   />
+
+//   {errors.salary && (
+//     <p className="text-red-500 text-xs mt-1 text-left">
+//       {errors.salary}
+//     </p>
+//   )}
+// </div>
+//   {/* Phone Number */}
+//   <div>
+//     <input
+//       className="w-full border rounded p-2"
+//       placeholder="Phone Number"
+//       value={form.phone_number}
+//       onChange={(e) => {
+//         setForm({
+//           ...form,
+//           phone_number: e.target.value,
+//         });
+
+//         setErrors({
+//           ...errors,
+//           phone_number: "",
+//         });
+//       }}
+//     />
+
+//     {errors.phone_number && (
+//       <p className="text-red-500 text-xs mt-1 text-left">
+//         {errors.phone_number}
+//       </p>
+//     )}
+//   </div>
+
+//   {/* Password */}
+//   <div>
+//     <input
+//       className="w-full border rounded p-2"
+//       placeholder="Password"
+//       type="password"
+//       value={form.password}
+//       onChange={(e) => {
+//         setForm({
+//           ...form,
+//           password: e.target.value,
+//         });
+
+//         setErrors({
+//           ...errors,
+//           password: "",
+//         });
+//       }}
+//     />
+
+//     {errors.password && (
+//       <p className="text-red-500 text-xs mt-1 text-left">
+//         {errors.password}
+//       </p>
+//     )}
+//   </div>
+
+//   <button
+//     onClick={createReceptionist}
+//     className="w-full rounded-md gradient-gold py-2"
+//   >
+//     Create Receptionist
+//   </button>
+
+// </div>
+// )}
+
+// {receptionists.length > 0 ? (
+  
+//   <div className="mt-8 overflow-hidden rounded-xl border">
+//     <div className="mt-8 mb-4 rounded-xl border bg-card p-4">
+//   <div className="flex justify-between items-center">
+
+//     <div>
+//       <p className="text-sm text-muted-foreground">
+//         Total Receptionists
+//       </p>
+
+//       <p className="text-2xl font-bold">
+//         {receptionists.length}
+//       </p>
+//     </div>
+
+//     <div className="text-right">
+//       <p className="text-sm text-muted-foreground">
+//         Total Salary
+//       </p>
+
+//       <p className="text-2xl font-bold text-green-600">
+//         ₹{totalReceptionistSalary.toLocaleString()}
+//       </p>
+//     </div>
+
+//   </div>
+// </div>
+//     <table className="w-full">
+//       <thead>
+//         <tr className="bg-gray-100">
+//           <th className="p-3 text-left">Name</th>
+//           <th className="p-3 text-left">Email</th>
+//           <th className="p-3 text-left">Salary</th>
+//           <th className="p-3 text-left">Phone</th>
+//           <th className="p-3 text-left">Action</th>
+//         </tr>
+//       </thead>
+
+//       <tbody>
+//         {receptionists.map((item: any) => (
+//           <tr key={item.id} className="border-t">
+//             <td className="p-3">
+//               {item.first_name} {item.last_name}
+//             </td>
+
+//             <td className="p-3">
+//               {item.email}
+//             </td>
+//             <td className="p-3">
+//   ₹{item.salary}
+// </td>
+//             <td className="p-3">
+//               {item.phone_number}
+//             </td>
+            
+//             <td className="p-3">
+//               <button
+//                 onClick={() => deleteReceptionist(item.id)}
+//                 className="rounded bg-red-500 px-3 py-1 text-white"
+//               >
+//                 Delete
+//               </button>
+//             </td>
+//           </tr>
+//         ))}
+//       </tbody>
+//     </table>
+//   </div>
+// ) : (
+//   <div className="mt-8 rounded-xl border border-dashed p-8 text-center text-muted-foreground">
+//     No receptionists added yet
+//   </div>
+// )}
+
+// </div>
+// );
+//  }
+
+
+
 function StaffView() {
   const [form, setForm] = useState({
     first_name: "",
@@ -2822,7 +3665,7 @@ const totalSalary = staff.reduce(
   0
 );
   return (
-    <div className="rounded-2xl bg-card border border-border p-8 shadow-soft text-center">
+<div className="rounded-2xl bg-card border border-border p-8 shadow-soft">
 
       <h3 className="font-display text-2xl font-bold">
         Manage Staff
@@ -2957,9 +3800,9 @@ const totalSalary = staff.reduce(
 
       {staff.length > 0 ? (
 
-        <div className="mt-8 overflow-hidden rounded-xl border">
+         <div className="mt-4 overflow-hidden rounded-xl border">
+           <div className="rounded-xl border bg-card p-4">
 
-            <div className="mt-8 mb-4 rounded-xl border bg-card p-4">
   <div className="flex justify-between items-center">
     
     <div>
@@ -3231,7 +4074,7 @@ const totalReceptionistSalary = receptionists.reduce(
   0
 );
   return (
-    <div className="rounded-2xl bg-card border border-border p-8 shadow-soft text-center">
+    <div className="rounded-2xl bg-card border border-border p-8 shadow-soft">
       <h3 className="font-display text-2xl font-bold">
         Manage Receptionists
       </h3>
@@ -3404,8 +4247,11 @@ const totalReceptionistSalary = receptionists.reduce(
 
 {receptionists.length > 0 ? (
   
-  <div className="mt-8 overflow-hidden rounded-xl border">
-    <div className="mt-8 mb-4 rounded-xl border bg-card p-4">
+  // <div className="mt-8 overflow-hidden rounded-xl border">
+  //   <div className="mt-8 mb-4 rounded-xl border bg-card p-4">
+  <div className="mt-4 overflow-hidden rounded-xl border">
+  {/* <div className="mb-4 rounded-xl border bg-card p-4"> */}
+  <div className="rounded-xl border bg-card p-4">
   <div className="flex justify-between items-center">
 
     <div>
@@ -3430,49 +4276,51 @@ const totalReceptionistSalary = receptionists.reduce(
 
   </div>
 </div>
-    <table className="w-full">
-      <thead>
-        <tr className="bg-gray-100">
-          <th className="p-3 text-left">Name</th>
-          <th className="p-3 text-left">Email</th>
-          <th className="p-3 text-left">Salary</th>
-          <th className="p-3 text-left">Phone</th>
-          <th className="p-3 text-left">Action</th>
-        </tr>
-      </thead>
+    <table className="w-full table-fixed">
+  <thead>
+    <tr className="bg-gray-100">
+      <th className="w-1/4 p-3 text-left">Name</th>
+      <th className="w-1/4 p-3 text-left">Email</th>
+      <th className="w-1/6 p-3 text-left">Salary</th>
+      <th className="w-1/4 p-3 text-left">Phone</th>
+      <th className="w-1/6 p-3 text-left">Action</th>
+    </tr>
+  </thead>
 
-      <tbody>
-        {receptionists.map((item: any) => (
-          <tr key={item.id} className="border-t">
-            <td className="p-3">
-              {item.first_name} {item.last_name}
-            </td>
+  <tbody>
+    {receptionists.map((item: any) => (
+      <tr key={item.id} className="border-t">
+        <td className="p-3">
+          {item.first_name} {item.last_name}
+        </td>
 
-            <td className="p-3">
-              {item.email}
-            </td>
-            <td className="p-3">
-  ₹{item.salary}
-</td>
-            <td className="p-3">
-              {item.phone_number}
-            </td>
-            
-            <td className="p-3">
-              <button
-                onClick={() => deleteReceptionist(item.id)}
-                className="rounded bg-red-500 px-3 py-1 text-white"
-              >
-                Delete
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+        <td className="p-3">
+          {item.email}
+        </td>
+
+        <td className="p-3">
+          ₹{item.salary}
+        </td>
+
+        <td className="p-3">
+          {item.phone_number}
+        </td>
+
+        <td className="p-3">
+          <button
+            onClick={() => deleteReceptionist(item.id)}
+            className="rounded bg-red-500 px-3 py-1 text-white"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
   </div>
 ) : (
-  <div className="mt-8 rounded-xl border border-dashed p-8 text-center text-muted-foreground">
+  <div className="rounded-2xl bg-card border border-border p-8 shadow-soft">
     No receptionists added yet
   </div>
 )}
