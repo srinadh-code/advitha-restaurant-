@@ -69,8 +69,8 @@ const CATS = [
   "Waterfalls",
   "Historical Places",
   "Parks",
-  "Adventure Spots",
-  "View Points",
+  // "Adventure Spots",
+  // "View Points",
 ] as const;
 
 interface TourismPlace {
