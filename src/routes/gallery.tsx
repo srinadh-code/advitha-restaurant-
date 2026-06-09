@@ -1,51 +1,163 @@
+
+
+
+
 // import { createFileRoute } from "@tanstack/react-router";
-// import { useState } from "react";
+// import { useEffect, useState } from "react";
 // import { SiteLayout } from "@/components/layout/SiteLayout";
 // import { SectionHeading } from "@/components/SectionHeading";
-// import { GALLERY } from "@/lib/mockData";
 // import { X } from "lucide-react";
+// import API from "@/api/api";
 
-// const CATS = ["Hotel", "Rooms", "Restaurant", "Tourism", "Customer Experiences"] as const;
+// const CATS = [
+//   "All",
+//   "Hotel",
+//   "Rooms",
+//   "Restaurant",
+//   "Tourism",
+//   "Customer Experiences",
+// ] as const;
+
+// type GalleryImage = {
+//   id: number;
+//   title: string;
+//   category: string;
+//   image_url: string;
+// };
 
 // export const Route = createFileRoute("/gallery")({
-//   head: () => ({ meta: [
-//     { title: "Gallery — Mulugu Hotel & Restaurant" },
-//     { name: "description", content: "Browse our hotel, rooms, restaurant and tourism gallery." },
-//     { property: "og:title", content: "Gallery — Mulugu Hotel" },
-//     { property: "og:description", content: "Hotel, room, restaurant and guest experience photos." },
-//   ]}),
+//   head: () => ({
+//     meta: [
+//       {
+//         title: "Gallery — Mulugu Hotel & Restaurant",
+//       },
+//       {
+//         name: "description",
+//         content:
+//           "Browse our hotel, rooms, restaurant and tourism gallery.",
+//       },
+//       {
+//         property: "og:title",
+//         content: "Gallery — Mulugu Hotel",
+//       },
+//       {
+//         property: "og:description",
+//         content:
+//           "Hotel, room, restaurant and guest experience photos.",
+//       },
+//     ],
+//   }),
 //   component: GalleryPage,
 // });
 
 // function GalleryPage() {
-//   const [cat, setCat] = useState<(typeof CATS)[number]>("Hotel");
+//   const [cat, setCat] =
+//     useState<(typeof CATS)[number]>("All");
+    
+
 //   const [open, setOpen] = useState<string | null>(null);
+
+//   const [images, setImages] = useState<GalleryImage[]>([]);
+
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     fetchGalleryImages();
+//   }, []);
+
+//   const fetchGalleryImages = async () => {
+//     try {
+//       const response = await API.get(
+//   "/api/gallery/images/"
+// );
+//       setImages(response.data);
+//     } catch (error) {
+//       console.error(
+//         "Failed to fetch gallery images",
+//         error
+//       );
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const filteredImages =
+//   cat === "All"
+//     ? images
+//     : images.filter(
+//         (img) => img.category === cat
+//       );
+
 //   return (
 //     <SiteLayout>
 //       <section className="container mx-auto px-4 pt-14 pb-8">
-//         <SectionHeading eyebrow="Memories" title="Our Gallery" />
+//         <SectionHeading
+//           eyebrow="Memories"
+//           title="Our Gallery"
+//         />
+
 //         <div className="mt-8 flex flex-wrap justify-center gap-2">
 //           {CATS.map((c) => (
-//             <button key={c} onClick={() => setCat(c)}
-//               className={`rounded-full px-4 py-2 text-sm font-medium transition border ${cat === c ? "gradient-gold text-gold-foreground border-transparent shadow-soft" : "bg-card border-border hover:bg-secondary"}`}>
+//             <button
+//               key={c}
+//               onClick={() => setCat(c)}
+//               className={`rounded-full px-4 py-2 text-sm font-medium transition border ${
+//                 cat === c
+//                   ? "gradient-gold text-gold-foreground border-transparent shadow-soft"
+//                   : "bg-card border-border hover:bg-secondary"
+//               }`}
+//             >
 //               {c}
 //             </button>
 //           ))}
 //         </div>
 //       </section>
+
 //       <section className="container mx-auto px-4 pb-20">
-//         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-//           {GALLERY[cat].map((src) => (
-//             <button key={src} onClick={() => setOpen(src)} className="group block overflow-hidden rounded-2xl shadow-soft">
-//               <img src={src} alt={cat} className="h-64 w-full object-cover transition group-hover:scale-105" />
-//             </button>
-//           ))}
-//         </div>
+//         {loading ? (
+//           <div className="py-10 text-center">
+//             Loading gallery...
+//           </div>
+//         ) : filteredImages.length === 0 ? (
+//           <div className="py-10 text-center text-muted-foreground">
+//             No images available in this category.
+//           </div>
+//         ) : (
+//           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+//             {filteredImages.map((img) => (
+//               <button
+//                 key={img.id}
+//                 onClick={() => setOpen(img.image_url)}
+//                 className="group block overflow-hidden rounded-2xl shadow-soft"
+//               >
+//                 <img
+//                   src={img.image_url}
+//                   alt={img.title}
+//                   className="h-64 w-full object-cover transition group-hover:scale-105"
+//                 />
+//               </button>
+//             ))}
+//           </div>
+//         )}
 //       </section>
+
 //       {open && (
-//         <div className="fixed inset-0 z-[60] grid place-items-center bg-black/85 p-4" onClick={() => setOpen(null)}>
-//           <button onClick={() => setOpen(null)} className="absolute top-5 right-5 text-white"><X /></button>
-//           <img src={open} alt="" className="max-h-[90vh] max-w-[95vw] rounded-2xl object-contain" />
+//         <div
+//           className="fixed inset-0 z-[60] grid place-items-center bg-black/85 p-4"
+//           onClick={() => setOpen(null)}
+//         >
+//           <button
+//             onClick={() => setOpen(null)}
+//             className="absolute top-5 right-5 text-white"
+//           >
+//             <X />
+//           </button>
+
+//           <img
+//             src={open}
+//             alt="Gallery"
+//             className="max-h-[90vh] max-w-[95vw] rounded-2xl object-contain"
+//           />
 //         </div>
 //       )}
 //     </SiteLayout>
@@ -57,6 +169,7 @@
 
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { SectionHeading } from "@/components/SectionHeading";
 import { X } from "lucide-react";
@@ -84,20 +197,6 @@ export const Route = createFileRoute("/gallery")({
       {
         title: "Gallery — Mulugu Hotel & Restaurant",
       },
-      {
-        name: "description",
-        content:
-          "Browse our hotel, rooms, restaurant and tourism gallery.",
-      },
-      {
-        property: "og:title",
-        content: "Gallery — Mulugu Hotel",
-      },
-      {
-        property: "og:description",
-        content:
-          "Hotel, room, restaurant and guest experience photos.",
-      },
     ],
   }),
   component: GalleryPage,
@@ -106,12 +205,10 @@ export const Route = createFileRoute("/gallery")({
 function GalleryPage() {
   const [cat, setCat] =
     useState<(typeof CATS)[number]>("All");
-    
 
   const [open, setOpen] = useState<string | null>(null);
 
   const [images, setImages] = useState<GalleryImage[]>([]);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -121,8 +218,9 @@ function GalleryPage() {
   const fetchGalleryImages = async () => {
     try {
       const response = await API.get(
-  "/api/gallery/images/"
-);
+        "/api/gallery/images/"
+      );
+
       setImages(response.data);
     } catch (error) {
       console.error(
@@ -135,26 +233,29 @@ function GalleryPage() {
   };
 
   const filteredImages =
-  cat === "All"
-    ? images
-    : images.filter(
-        (img) => img.category === cat
-      );
+    cat === "All"
+      ? images
+      : images.filter(
+          (img) => img.category === cat
+        );
 
   return (
     <SiteLayout>
-      <section className="container mx-auto px-4 pt-14 pb-8">
+      {/* HERO */}
+      <section className="container mx-auto px-4 pt-14 pb-10">
         <SectionHeading
-          eyebrow="Memories"
+          eyebrow="Luxury Moments"
           title="Our Gallery"
+          sub="Explore our hotel, rooms, dining experiences and nearby attractions."
         />
 
-        <div className="mt-8 flex flex-wrap justify-center gap-2">
+        {/* FILTERS */}
+        <div className="mt-10 flex flex-wrap justify-center gap-3">
           {CATS.map((c) => (
             <button
               key={c}
               onClick={() => setCat(c)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition border ${
+              className={`rounded-full px-5 py-2 text-sm font-medium transition-all duration-300 border ${
                 cat === c
                   ? "gradient-gold text-gold-foreground border-transparent shadow-soft"
                   : "bg-card border-border hover:bg-secondary"
@@ -166,53 +267,117 @@ function GalleryPage() {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 pb-20">
+      {/* GALLERY */}
+      <section className="container mx-auto px-4 pb-24">
         {loading ? (
-          <div className="py-10 text-center">
-            Loading gallery...
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(9)].map((_, i) => (
+              <div
+                key={i}
+                className="h-72 rounded-3xl animate-pulse bg-secondary"
+              />
+            ))}
           </div>
         ) : filteredImages.length === 0 ? (
-          <div className="py-10 text-center text-muted-foreground">
+          <div className="py-20 text-center text-muted-foreground">
             No images available in this category.
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {filteredImages.map((img) => (
-              <button
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
+            {filteredImages.map((img, i) => (
+              <motion.button
                 key={img.id}
                 onClick={() => setOpen(img.image_url)}
-                className="group block overflow-hidden rounded-2xl shadow-soft"
+                initial={{
+                  opacity: 0,
+                  y: 30,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.7,
+                  delay: i * 0.05,
+                }}
+                className="group relative mb-5 block w-full break-inside-avoid overflow-hidden rounded-3xl shadow-soft hover:shadow-luxury"
               >
-                <img
-                  src={img.image_url}
-                  alt={img.title}
-                  className="h-64 w-full object-cover transition group-hover:scale-105"
-                />
-              </button>
+                <div className="relative overflow-hidden">
+                  <img
+                    src={img.image_url}
+                    alt={img.title}
+                    loading="lazy"
+                    className="w-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                  />
+
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition duration-500 group-hover:opacity-100" />
+
+                  {/* Category Badge */}
+                  <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-black backdrop-blur">
+                    {img.category}
+                  </div>
+
+                  {/* Content */}
+                  <div className="absolute bottom-0 left-0 right-0 translate-y-8 p-5 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                    <h3 className="text-lg font-semibold text-white">
+                      {img.title}
+                    </h3>
+
+                    <p className="mt-1 text-sm text-gold">
+                      Click to view
+                    </p>
+                  </div>
+                </div>
+              </motion.button>
             ))}
           </div>
         )}
       </section>
 
-      {open && (
-        <div
-          className="fixed inset-0 z-[60] grid place-items-center bg-black/85 p-4"
-          onClick={() => setOpen(null)}
-        >
-          <button
+      {/* FULL SCREEN VIEWER */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
             onClick={() => setOpen(null)}
-            className="absolute top-5 right-5 text-white"
           >
-            <X />
-          </button>
+            <button
+              onClick={() => setOpen(null)}
+              className="absolute right-6 top-6 text-white hover:text-gold"
+            >
+              <X size={34} />
+            </button>
 
-          <img
-            src={open}
-            alt="Gallery"
-            className="max-h-[90vh] max-w-[95vw] rounded-2xl object-contain"
-          />
-        </div>
-      )}
+            <motion.img
+              initial={{
+                opacity: 0,
+                scale: 0.9,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+              src={open}
+              alt="Gallery"
+              className="max-h-[90vh] max-w-[95vw] rounded-3xl object-contain shadow-2xl"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </SiteLayout>
   );
 }

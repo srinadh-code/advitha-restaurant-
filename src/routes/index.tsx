@@ -84,21 +84,21 @@ const fetchFoods = async () => {
         (f: Food) =>
           f.category_name.toLowerCase().trim() === "veg"
       )
-      .slice(0, 2);
+      .slice(0, 3);
 
     const nonVeg = foods
       .filter(
         (f: Food) =>
           f.category_name.toLowerCase().trim() === "non-veg"
       )
-      .slice(0, 2);
+      .slice(0, 3);
 
     const iceCream = foods
       .filter(
         (f: Food) =>
           f.category_name.toLowerCase().trim() === "ice creams"
       )
-      .slice(0, 2);
+      .slice(0, 3);
 
     setFeaturedFoods([
       ...veg,
@@ -215,7 +215,6 @@ const fetchTourismPlaces = async () => {
             {/* FEATURED FOOD */}
 
 
-
             
       <section className="container mx-auto px-4 py-20">
         <SectionHeading eyebrow="Taste of Mulugu" title="Featured Cuisine" sub="From street-style starters to royal thalis." />
@@ -260,36 +259,90 @@ const fetchTourismPlaces = async () => {
           </Link>
         </div>
       </section>
-      
 
-    
+
+
+      
+       
 
       {/* FEATURED ROOMS */}
       <section className="bg-secondary/50 py-20">
         <div className="container mx-auto px-4">
           <SectionHeading eyebrow="Stay With Us" title="Featured Rooms" sub="Hand-picked rooms for every kind of stay." />
           <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {featuredRooms.map((r, i) => (
-              <motion.div key={r.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="group overflow-hidden rounded-2xl bg-card border border-border shadow-soft hover:shadow-luxury transition">
-                <div className="relative h-56 overflow-hidden">
-                  <img
-  src={`http://127.0.0.1:8000${r.image}`}
-  alt={r.title}
-  className="h-full w-full object-cover transition group-hover:scale-105"
-/>
-                </div>
-                <div className="p-5">
-                  <h3 className="font-display text-xl font-bold">{r.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{r.description}</p>
-                  <Link to="/rooms" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
-                    View Details <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+  {featuredRooms.map((r, i) => (
+    <motion.div
+      key={r.id}
+      initial={{
+        opacity: 0,
+        y: 30,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      viewport={{ once: true }}
+      transition={{
+        duration: 0.7,
+        delay: i * 0.12,
+      }}
+      className="group overflow-hidden rounded-2xl bg-card border border-border shadow-soft hover:shadow-luxury hover:-translate-y-1 transition-all duration-500"
+    >
+      {/* Room Image */}
+      <div className="relative h-56 overflow-hidden">
+        <motion.img
+          src={`http://127.0.0.1:8000${r.image}`}
+          alt={r.title}
+          initial={{
+            opacity: 0,
+            y: 15,
+            scale: 1.08,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+            scale: 1,
+          }}
+          viewport={{ once: true }}
+          transition={{
+            duration: 1.2,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.04]"
+        />
+
+        {/* Luxury Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+
+        {/* Room Label */}
+      </div>
+
+      {/* Content */}
+      <div className="p-5">
+        <h3 className="font-display text-xl font-bold line-clamp-1">
+          {r.title}
+        </h3>
+
+        <p className="mt-2 text-sm text-muted-foreground line-clamp-3">
+          {r.description}
+        </p>
+
+        <div className="mt-4 flex items-center justify-between">
+          <span className="text-sm font-medium text-gold">
+            Comfortable Stay
+          </span>
+
+          <Link
+            to="/rooms"
+            className="text-sm font-semibold text-primary hover:text-gold transition"
+          >
+            View Details →
+          </Link>
+        </div>
+      </div>
+    </motion.div>
+  ))}
+</div>
           <div className="mt-10 text-center">
             <Link to="/rooms" className="rounded-md gradient-gold px-6 py-3 text-sm font-semibold text-gold-foreground shadow-soft">
               View All Rooms
