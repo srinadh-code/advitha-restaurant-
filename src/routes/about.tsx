@@ -21,7 +21,7 @@ function AboutPage() {
       <section className="container mx-auto px-4 pt-16 text-center">
 
   <h1 className="mt-3 font-display text-4xl font-bold">
-    Welcome to Mulugu Hotel & Restaurant
+    Welcome to Advitha Hotel & Restaurant
   </h1>
 
   <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">

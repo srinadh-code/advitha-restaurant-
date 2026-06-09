@@ -5,7 +5,7 @@ export function FloatingActions() {
   return (
     <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-3">
       <a
-        href={`https://wa.me/${HOTEL.whatsapp}?text=Hello%20Mulugu%20Hotel`}
+        href={`https://wa.me/${HOTEL.whatsapp}?text=Hello%20Advitha%20Hotel`}
         target="_blank" rel="noreferrer"
         aria-label="WhatsApp"
         className="grid h-12 w-12 place-items-center rounded-full bg-green-600 text-white shadow-luxury hover:scale-105 transition"
