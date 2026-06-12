@@ -42,7 +42,15 @@ const items: SidebarItem[] = [
 ];
 
 function AdminGuard() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
+  const { user, authLoading } = useAuth();
+  if (authLoading) {
+  return (
+    <div className="flex h-screen items-center justify-center">
+      Loading...
+    </div>
+  );
+}
   if (!user) return <Navigate to="/login" />;
   if (user.role !== "admin") return <Navigate to="/" />;
   return <AdminInner />;
@@ -102,14 +110,7 @@ function DashboardView() {
     </div>
   );
 }
-// function BookingsView() {
-//   return <DataTable columns={["ID", "Guest", "Email", "Room", "Check-In", "Check-Out", "Status"]} rows={[
-//     ["#B001", "Ramesh K.", "ramesh@x.com", "Deluxe", "2026-05-30", "2026-06-01", "Confirmed"],
-//     ["#B002", "Lakshmi P.", "lakshmi@x.com", "Family Suite", "2026-05-31", "2026-06-03", "Pending"],
-//     ["#B003", "Arjun M.", "arjun@x.com", "Executive", "2026-06-02", "2026-06-04", "Confirmed"],
-//     ["#B004", "Sneha V.", "sneha@x.com", "Premium", "2026-06-05", "2026-06-07", "Cancelled"],
-//   ]} />;
-// }
+
 function BookingsView() {
   const [bookings, setBookings] = useState<any[]>([]);
 
@@ -761,24 +762,7 @@ duration-300
 >
 + Add Food
 </button>
-{/* <button
-onClick={() => {
 
-setEditingFood(null);
-
-setFormData({
-name:"",
-category:"",
-price:"",
-description:"",
-});
-
-setShowModal(true);
-
-}}
->
-+ Add Food
-</button> */}
       </div>
 
       {/* Stats */}
@@ -858,8 +842,6 @@ setShowModal(true);
               />
             </div>
 
-            {/* Content */}
-            {/* <div className="p-5"> */}
             <div className="p-4">
 
               <div className="flex items-start justify-between">
@@ -895,24 +877,7 @@ setShowModal(true);
               {/* Actions */}
               <div className="mt-6 flex gap-3">
 
-               {/* <button
-onClick={() => {
 
-setEditingFood(food);
-
-setFormData({
-name: food.name,
-category: food.category,
-price: food.price,
-description: food.description,
-});
-
-setShowModal(true);
-
-}}
->
-Edit
-</button> */}
 
 
 <button
@@ -960,13 +925,7 @@ transition
 Delete
 </button>
 
-                {/* <button
-onClick={() =>
-deleteFood(food.id)
-}
->
-Delete
-</button> */}
+
 
               </div>
 
@@ -1077,16 +1036,7 @@ description:e.target.value
 }
 />
 
-{/* <input
-type="file"
-className="mb-4"
-onChange={(e)=>
-setImage(
-e.target.files?.[0] || null
-)
-}
 
-/> */}
 
 <label
 className="
@@ -1122,22 +1072,7 @@ setImage(e.target.files?.[0] || null)
 }
 />
 
-{/* {
-image && (
-<img
-src={URL.createObjectURL(image)}
-alt="preview"
-className="
-mt-4
-h-56
-w-full
-object-cover
-rounded-3xl
-shadow-md
-"
-/>
-)
-} */}
+
 
 </label>
 

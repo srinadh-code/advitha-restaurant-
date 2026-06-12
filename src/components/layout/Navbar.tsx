@@ -9,7 +9,10 @@ const links = [
   { to: "/restaurant", label: "Restaurant" },
   { to: "/rooms", label: "Rooms" },
   { to: "/tourism", label: "Tourism" },
+  { to: "/events", label: "Events" },
+  
   { to: "/gallery", label: "Gallery" },
+
   { to: "/about", label: "About Us" },
   { to: "/contact", label: "Contact" },
 ] as const;
@@ -38,6 +41,7 @@ export function Navbar() {
     </span>
   </span>
 </Link>
+
 
         <nav className="hidden lg:flex items-center gap-1">
           {links.map((l) => (

@@ -1,74 +1,12 @@
-// import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-// import { useState } from "react";
-// import { toast } from "sonner";
-// import { SiteLayout } from "@/components/layout/SiteLayout";
-// import { useAuth } from "@/lib/auth";
-// import { DEMO_USERS } from "@/lib/mockData";
-// import { GoogleLogin } from "@react-oauth/google";
-// import API from "@/api/api";
-// export const Route = createFileRoute("/login")({
-//   head: () => ({ meta: [{ title: "Login — Mulugu Hotel" }, { name: "description", content: "Login to your Mulugu Hotel account." }]}),
-//   component: LoginPage,
-// });
 
-// function LoginPage() {
-//   return (
-//     <SiteLayout>
-//       <Inner />
-//     </SiteLayout>
-//   );
-// }
+import hotelExterior from "@/assets/hotel-exterior.jpg";
 
-// function Inner() {
-//   const { login } = useAuth();
-//   const navigate = useNavigate();
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-
-//   const submit = async (e: React.FormEvent) => {
-//   e.preventDefault();
-
-//   const r = await login(email, password);
-
-//   if (!r.ok) {
-//     toast.error(r.error || "Login failed");
-//     return;
-//   }
-
-//   toast.success("Welcome back!");
-
-//   if (r.role === "admin") {
-//     navigate({ to: "/admin" });
-//   } else if (r.role === "receptionist") {
-//     navigate({ to: "/receptionist" });
-//   } else {
-//     navigate({ to: "/" });
-//   }
-// };
-
-//   return (
-//     <section className="container mx-auto grid place-items-center px-4 py-20">
-//       <div className="w-full max-w-md rounded-2xl bg-card border border-border p-8 shadow-luxury">
-//         <h1 className="font-display text-3xl font-bold">Welcome Back</h1>
-//         <p className="mt-1 text-sm text-muted-foreground">Login to your account</p>
-//         <form onSubmit={submit} className="mt-6 space-y-4">
-//           <input className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-//           <input className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-//           <button className="w-full rounded-md gradient-gold py-2.5 text-sm font-semibold text-gold-foreground shadow-soft">Login</button>
-//         </form>
-//         <div className="mt-4 flex justify-between text-sm">
-//           <Link to="/forgot-password" className="text-primary hover:underline">Forgot password?</Link>
-//           <Link to="/signup" className="text-primary hover:underline">Create account</Link>
-//         </div>
-     
-//       </div>
-//     </section>
-//   );
-// }
-
-
-
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  useNavigate,
+  Navigate,
+} from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { GoogleLogin } from "@react-oauth/google";
@@ -99,16 +37,33 @@ function LoginPage() {
 }
 
 function Inner() {
-  const { login, setUser } = useAuth();
-  // const { login } = useAuth();
+  const { login, setUser, user } = useAuth();
   const navigate = useNavigate();
 
+  if (user) {
+    if (user.role === "admin") {
+      return <Navigate to="/admin" />;
+    }
+
+    if (user.role === "receptionist") {
+      return <Navigate to="/receptionist" />;
+    }
+
+    return <Navigate to="/" />;
+  }
+
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // const { login } = useAuth();
+
 
   const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
+  setLoading(true);
+
+  try {
     const r = await login(email, password);
 
     if (!r.ok) {
@@ -125,7 +80,10 @@ function Inner() {
     } else {
       navigate({ to: "/" });
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleGoogleLogin = async (
     credentialResponse: any
@@ -174,72 +132,145 @@ function Inner() {
   };
 
   return (
-    <section className="container mx-auto grid place-items-center px-4 py-20">
-      <div className="w-full max-w-md rounded-2xl bg-card border border-border p-8 shadow-luxury">
-        <h1 className="font-display text-3xl font-bold">
-          Welcome Back
-        </h1>
+  <section className="relative min-h-screen overflow-hidden bg-[#f7f2e8]">
 
-        <p className="mt-1 text-sm text-muted-foreground">
-          Login to your account
-        </p>
+    {/* Background Decoration */}
+    <div className="absolute top-0 left-0 h-96 w-96 rounded-full bg-yellow-400/10 blur-[120px]" />
+    <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-orange-400/10 blur-[120px]" />
 
-        <form
-          onSubmit={submit}
-          className="mt-6 space-y-4"
-        >
-          <input
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-            placeholder="Email"
-            type="email"
-            value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
-          />
+    <div className="container mx-auto flex min-h-screen items-center justify-center px-4 py-10">
 
-          <input
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
-          />
+      <div className="w-full max-w-5xl overflow-hidden rounded-[32px] border border-gold/20 bg-white shadow-[0_30px_80px_rgba(0,0,0,0.12)]">
 
-          <button className="w-full rounded-md gradient-gold py-2.5 text-sm font-semibold text-gold-foreground shadow-soft">
-            Login
-          </button>
-        </form>
+        <div className="grid lg:grid-cols-2">
 
-        <div className="my-6 flex justify-center">
-          <GoogleLogin
-            onSuccess={handleGoogleLogin}
-            onError={() => {
-              toast.error(
-                "Google Login Failed"
-              );
-            }}
-          />
+          {/* LEFT SIDE */}
+          <div className="p-10 lg:p-14">
+
+            <span className="rounded-full bg-gold/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-gold">
+              Member Access
+            </span>
+
+            <h1 className="mt-6 font-display text-5xl font-bold leading-tight">
+              Welcome
+              <span className="block text-gold">
+                Back
+              </span>
+            </h1>
+
+            <p className="mt-4 text-muted-foreground">
+              Login to manage bookings, explore premium rooms,
+              restaurant services and tourism experiences.
+            </p>
+
+            {loading && (
+              <div className="mt-5 rounded-xl border border-gold/20 bg-gold/10 px-4 py-3 text-center text-sm text-gold animate-pulse">
+                Verifying credentials...
+              </div>
+            )}
+
+            <form
+              onSubmit={submit}
+              className="mt-8 space-y-4"
+            >
+              <input
+                type="email"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e) =>
+                  setEmail(e.target.value)
+                }
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-gold"
+              />
+
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) =>
+                  setPassword(e.target.value)
+                }
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-gold"
+              />
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 py-3 font-semibold text-white shadow-lg transition hover:scale-[1.02]"
+              >
+                {loading ? (
+                  <>
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    Logging In...
+                  </>
+                ) : (
+                  "Login"
+                )}
+              </button>
+            </form>
+
+            <div className="my-6 flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleLogin}
+                onError={() =>
+                  toast.error("Google Login Failed")
+                }
+              />
+            </div>
+
+            <div className="flex justify-between text-sm">
+              <Link
+                to="/forgot-password"
+                className="text-gold hover:underline"
+              >
+                Forgot password?
+              </Link>
+
+              <Link
+                to="/signup"
+                className="text-gold hover:underline"
+              >
+                Create account
+              </Link>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE */}
+<div className="flex items-center justify-center bg-[#F8F3E9] p-10">
+
+  <div className="w-full max-w-md">
+
+    <div className="overflow-hidden rounded-3xl border border-gold/20 bg-white p-3 shadow-[0_20px_50px_rgba(0,0,0,0.12)]">
+      <img
+  src={hotelExterior}
+  alt="Advitha Hotel"
+  className="h-[500px] w-full rounded-2xl object-cover"
+/>
+    </div>
+
+    <div className="mt-6 text-center">
+      <p className="text-xs uppercase tracking-[0.4em] text-gold">
+        Luxury Hotel & Restaurant
+      </p>
+
+      <h2 className="mt-3 font-display text-4xl font-bold text-[#2D1B0F]">
+        Advitha Hotel
+      </h2>
+
+      <p className="mt-2 text-muted-foreground">
+        Mulugu, Telangana
+      </p>
+    </div>
+
+  </div>
+
+</div>
+          </div>
+
         </div>
 
-        <div className="mt-4 flex justify-between text-sm">
-          <Link
-            to="/forgot-password"
-            className="text-primary hover:underline"
-          >
-            Forgot password?
-          </Link>
-
-          <Link
-            to="/signup"
-            className="text-primary hover:underline"
-          >
-            Create account
-          </Link>
-        </div>
       </div>
-    </section>
-  );
-}
+
+    
+  </section>
+);}
