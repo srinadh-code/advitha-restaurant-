@@ -75,6 +75,12 @@ const items: SidebarItem[] = [
   },
 ];
 
+
+
+
+
+
+
 function RecepGuard() {
   // const { user } = useAuth();
   const { user, authLoading } = useAuth();
@@ -99,6 +105,10 @@ function RecepGuard() {
 }
 
 function Inner() {
+  const [search, setSearch] = useState("");
+const [statusFilter, setStatusFilter] = useState("all");
+const [selectedBooking, setSelectedBooking] =
+  useState<any>(null);
   const [enquiries, setEnquiries] = useState<any[]>([]);
   const [active, setActive] = useState("dashboard");
   const [bookings, setBookings] = useState<any[]>([]);
@@ -141,6 +151,7 @@ const handleCheckIn = async (id: number) => {
     );
 
     fetchCheckIns();
+    await fetchBookings();
   } catch (error) {
     console.error("Check-in failed:", error);
   }
@@ -220,6 +231,7 @@ const handleCheckOut = async (id: number) => {
     );
 
     fetchCheckOuts();
+    await fetchBookings();
   } catch (error) {
     console.error(error);
   }
@@ -235,6 +247,30 @@ const fetchBookings = async () => {
     setLoading(false);
   }
 };
+
+
+
+const handleViewBooking = (booking: any) => {
+  setSelectedBooking(booking);
+};
+
+const filteredBookings = bookings.filter((booking) => {
+  const searchTerm = search.trim().toLowerCase();
+
+  const matchesSearch =
+    !searchTerm ||
+    booking.full_name?.toLowerCase().includes(searchTerm) ||
+    String(booking.phone).includes(searchTerm) ||
+    String(booking.room_name || "")
+      .toLowerCase()
+      .includes(searchTerm);
+
+  const matchesStatus =
+    statusFilter === "all" ||
+    booking.status === statusFilter;
+
+  return matchesSearch && matchesStatus;
+});
 
   return (
     <DashboardShell
@@ -256,12 +292,187 @@ const fetchBookings = async () => {
         </div>
       )}
 
-      {/* Room Bookings */}
 
-      {active === "bookings" && (
+
+{/* Room Bookings */}
+{active === "bookings" && (
   <>
+    {/* Header */}
+    <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+      <h2 className="text-2xl font-bold">Room Bookings</h2>
+
+     <button
+  onClick={() =>
+    alert(
+      "Walk-in booking feature is not implemented yet."
+    )
+  }
+  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg"
+>
+  + New Booking
+</button>
+    </div>
+
+    {/* Stats Cards */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div className="bg-white p-4 rounded-lg shadow">
+        <p className="text-gray-500">Total Bookings</p>
+        <h2 className="text-2xl font-bold">
+          {bookings.length}
+        </h2>
+      </div>
+
+      <div className="bg-white p-4 rounded-lg shadow">
+        <p className="text-gray-500">Booked</p>
+        <h2 className="text-2xl font-bold text-blue-600">
+          {
+            bookings.filter(
+              (b) => b.status === "booked"
+            ).length
+          }
+        </h2>
+      </div>
+
+      <div className="bg-white p-4 rounded-lg shadow">
+        <p className="text-gray-500">Checked In</p>
+        <h2 className="text-2xl font-bold text-green-600">
+          {
+            bookings.filter(
+              (b) => b.status === "checked_in"
+            ).length
+          }
+        </h2>
+      </div>
+
+      <div className="bg-white p-4 rounded-lg shadow">
+        <p className="text-gray-500">Checked Out</p>
+        <h2 className="text-2xl font-bold text-gray-600">
+          {
+            bookings.filter(
+              (b) => b.status === "checked_out"
+            ).length
+          }
+        </h2>
+      </div>
+    </div>
+
+    {/* Search + Filters */}
+    <div className="bg-white p-4 rounded-lg shadow mb-6">
+      <div className="flex flex-col md:flex-row gap-4 justify-between">
+        <input
+          type="text"
+          placeholder="Search by Guest, Phone or Booking ID..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border rounded-lg px-4 py-2 w-full md:w-96"
+        />
+
+        <div className="flex flex-wrap gap-2">
+          {[
+            { label: "All", value: "all" },
+            { label: "Booked", value: "booked" },
+            {
+              label: "Checked In",
+              value: "checked_in",
+            },
+            {
+              label: "Checked Out",
+              value: "checked_out",
+            },
+          ].map((filter) => (
+            <button
+              key={filter.value}
+              onClick={() =>
+                setStatusFilter(filter.value)
+              }
+              className={`px-3 py-2 rounded-lg text-sm ${
+                statusFilter === filter.value
+                  ? "bg-yellow-500 text-white"
+                  : "bg-gray-100"
+              }`}
+            >
+              {filter.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+    {selectedBooking && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+
+      <h2 className="text-xl font-bold mb-4">
+        Booking Details
+      </h2>
+
+      <div className="space-y-2">
+        <p>
+          <strong>Guest:</strong>{" "}
+          {selectedBooking.full_name}
+        </p>
+
+        <p>
+          <strong>Phone:</strong>{" "}
+          {selectedBooking.phone}
+        </p>
+
+        <p>
+          <strong>Email:</strong>{" "}
+          {selectedBooking.email}
+        </p>
+
+        <p>
+          <strong>Room:</strong>{" "}
+          {selectedBooking.room_name}
+        </p>
+
+        <p>
+          <strong>Check In:</strong>{" "}
+          {selectedBooking.check_in}
+        </p>
+
+        <p>
+          <strong>Check Out:</strong>{" "}
+          {selectedBooking.check_out}
+        </p>
+
+        <p>
+          <strong>Guests:</strong>{" "}
+          {selectedBooking.guests}
+        </p>
+
+        <p>
+          <strong>Status:</strong>{" "}
+          {selectedBooking.status}
+        </p>
+      </div>
+
+      <div className="mt-6 flex justify-end">
+        <button
+          onClick={() => setSelectedBooking(null)}
+          className="px-4 py-2 bg-red-500 text-white rounded"
+        >
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+    )}
     {loading ? (
-      <div>Loading bookings...</div>
+      <div className="text-center py-10">
+        Loading bookings...
+      </div>
+    ) : filteredBookings.length === 0 ? (
+      <div className="bg-white p-10 rounded-lg shadow text-center">
+        <h3 className="text-lg font-semibold mb-2">
+          No bookings found
+        </h3>
+        <p className="text-gray-500">
+          Try changing filters or create a new
+          booking.
+        </p>
+      </div>
     ) : (
       <DataTable
         columns={[
@@ -272,21 +483,72 @@ const fetchBookings = async () => {
           "Check-In",
           "Check-Out",
           "Guests",
+          "Status",
+          "Actions",
         ]}
-        rows={bookings.map((booking) => [
+        rows={filteredBookings.map((booking) => [
           booking.id,
           booking.full_name,
           booking.phone,
-          booking.room,
+          booking.room_name,
           booking.check_in,
           booking.check_out,
           booking.guests,
+
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${
+              booking.status === "booked"
+                ? "bg-blue-100 text-blue-700"
+                : booking.status ===
+                  "checked_in"
+                ? "bg-green-100 text-green-700"
+                : booking.status ===
+                  "checked_out"
+                ? "bg-gray-100 text-gray-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {booking.status.replace("_", " ")}
+          </span>,
+
+          <div className="flex gap-2">
+            <button
+              onClick={() =>
+                handleViewBooking(booking)
+              }
+              className="px-3 py-1 bg-blue-500 text-white rounded text-sm"
+            >
+              View
+            </button>
+
+            {booking.status === "booked" && (
+              <button
+                onClick={() =>
+                  handleCheckIn(booking.id)
+                }
+                className="px-3 py-1 bg-green-500 text-white rounded text-sm"
+              >
+                Check In
+              </button>
+            )}
+
+            {booking.status ===
+              "checked_in" && (
+              <button
+                onClick={() =>
+                  handleCheckOut(booking.id)
+                }
+                className="px-3 py-1 bg-orange-500 text-white rounded text-sm"
+              >
+                Check Out
+              </button>
+            )}
+          </div>,
         ])}
       />
     )}
   </>
 )}
-
 
 {active === "event-bookings" && (
   <DataTable

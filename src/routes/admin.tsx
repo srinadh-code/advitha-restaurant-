@@ -9,7 +9,17 @@ import { ROOMS, REVIEWS } from "@/lib/mockData";
 import { Toaster } from "@/components/ui/sonner";
 
 
+import {
+  Building2,
+  BedDouble,
+ 
+  Hotel,
+  
 
+  Headset,
+  PartyPopper,
+  Percent,
+} from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -79,34 +89,126 @@ function AdminInner() {
 }
 
 function DashboardView() {
+  const [dashboard, setDashboard] = useState<any>(null);
+useEffect(() => {
+  const fetchDashboard = async () => {
+    try {
+      const res = await API.get("/api/dashboard/");
+      console.log(res.data);
+      setDashboard(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  fetchDashboard();
+}, []);
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        <StatCard label="Total Bookings" value={128} accent="text-gradient-gold" />
-        <StatCard label="Available Rooms" value={22} />
-        <StatCard label="Occupied Rooms" value={26} />
-        <StatCard label="Restaurant Reservations" value={47} />
-        <StatCard label="Total Customers" value={"2,415"} />
-        <StatCard label="Revenue (₹)" value={"4.8 L"} accent="text-gradient-gold" />
-      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <StatCard
+  label="Total Rooms"
+  value={dashboard?.total_rooms || 0}
+  icon={Building2}
+/>
+
+<StatCard
+  label="Available Rooms"
+  value={dashboard?.available_rooms || 0}
+  icon={BedDouble}
+/>
+
+<StatCard
+  label="Total Bookings"
+  value={dashboard?.total_bookings || 0}
+  icon={CalendarCheck}
+/>
+
+<StatCard
+  label="Occupied Rooms"
+  value={dashboard?.occupied_rooms || 0}
+  icon={Hotel}
+/>
+<StatCard
+  label="Event Bookings"
+  value={dashboard?.total_event_bookings || 0}
+  icon={PartyPopper}
+/>
+
+
+<StatCard
+  label="Total Customers"
+  value={dashboard?.total_customers || 0}
+  icon={Users}
+/>
+
+<StatCard
+  label="Total Staff"
+  value={dashboard?.total_staff || 0}
+  icon={UserCog}
+/>
+
+<StatCard
+  label="Receptionists"
+  value={dashboard?.total_receptionists || 0}
+  icon={Headset}
+/>
+
+<StatCard
+  label="Restaurant Reservations"
+  value={dashboard?.restaurant_reservations || 0}
+  icon={UtensilsCrossed}
+/>
+
+<StatCard
+  label="Occupancy Rate"
+  value={`${dashboard?.occupancy_rate || 0}%`}
+  icon={Percent}
+/>
+
+</div>
+        {/* <StatCard label="Revenue (₹)" value={"4.8 L"} accent="text-gradient-gold" /> */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl bg-card border border-border p-5 shadow-soft">
-          <h3 className="font-display text-lg font-bold mb-3">Recent Bookings</h3>
-          <DataTable columns={["Guest", "Room", "Check-In", "Status"]} rows={[
-            ["Ramesh K.", "Deluxe", "2026-05-30", "Confirmed"],
-            ["Lakshmi P.", "Family Suite", "2026-05-31", "Pending"],
-            ["Arjun M.", "Executive", "2026-06-02", "Confirmed"],
-          ]} />
-        </div>
-        <div className="rounded-2xl bg-card border border-border p-5 shadow-soft">
-          <h3 className="font-display text-lg font-bold mb-3">Revenue This Week</h3>
-          <div className="flex h-48 items-end gap-3">
-            {[40, 65, 55, 80, 70, 90, 60].map((h, i) => (
-              <div key={i} className="flex-1 rounded-t-md gradient-gold" style={{ height: `${h}%` }} title={`Day ${i + 1}`} />
-            ))}
-          </div>
-        </div>
-      </div>
+
+  {/* LEFT SIDE */}
+  <div className="rounded-2xl bg-card border border-border p-5 shadow-soft">
+    <h3 className="font-display text-lg font-bold mb-3">
+      Recent Bookings
+    </h3>
+
+    <DataTable
+      columns={["Guest", "Room", "Check-In", "Status"]}
+      rows={
+        dashboard?.recent_bookings?.map((booking: any) => [
+          booking.guest,
+          booking.room,
+          booking.check_in,
+          booking.status,
+        ]) || []
+      }
+    />
+  </div>
+
+  {/* RIGHT SIDE */}
+  <div className="rounded-2xl bg-card border border-border p-5 shadow-soft">
+    <h3 className="font-display text-lg font-bold mb-3">
+      Recent Event Bookings
+    </h3>
+
+    <DataTable
+      columns={["Name", "Event", "Date", "Guests"]}
+      rows={
+        dashboard?.recent_event_bookings?.map((booking: any) => [
+          booking.name,
+          booking.event_type,
+          booking.event_date,
+          booking.guests,
+        ]) || []
+      }
+    />
+  </div>
+
+</div>
     </div>
   );
 }

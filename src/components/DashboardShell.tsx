@@ -69,15 +69,49 @@ export function DashboardShell({
   );
 }
 
-export function StatCard({ label, value, accent }: { label: string; value: string | number; accent?: string }) {
+// export function StatCard({ label, value, accent }: { label: string; value: string | number; accent?: string }) {
+//   return (
+//     <div className="rounded-2xl bg-card border border-border p-5 shadow-soft">
+//       <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
+//       <p className={`mt-2 font-display text-3xl font-bold ${accent ?? "text-foreground"}`}>{value}</p>
+//     </div>
+//   );
+// }
+export function StatCard({
+  label,
+  value,
+  accent,
+  icon: Icon,
+}: {
+  label: string;
+  value: string | number;
+  accent?: string;
+  icon?: React.ComponentType<{ className?: string }>;
+}) {
   return (
-    <div className="rounded-2xl bg-card border border-border p-5 shadow-soft">
-      <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className={`mt-2 font-display text-3xl font-bold ${accent ?? "text-foreground"}`}>{value}</p>
+    <div className="rounded-2xl bg-card border border-border p-5 shadow-soft hover:shadow-lg transition relative">
+      
+      {/* Small Icon Top Right */}
+      {Icon && (
+        <div className="absolute top-4 right-4 rounded-full bg-yellow-100 p-2">
+          <Icon className="h-4 w-4 text-yellow-600" />
+        </div>
+      )}
+
+      <p className="text-xs uppercase tracking-wider text-muted-foreground">
+        {label}
+      </p>
+
+      <p
+        className={`mt-3 font-display text-3xl font-bold ${
+          accent ?? "text-foreground"
+        }`}
+      >
+        {value}
+      </p>
     </div>
   );
 }
-
 export function DataTable({ columns, rows }: { columns: string[]; rows: (string | number)[][] }) {
   return (
     <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-soft">
