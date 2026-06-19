@@ -78,7 +78,9 @@ function AdminInner() {
       {active === "gallery" && <GalleryView />}
       {active === "customers" && <CustomersView />}
       {active === "reviews" && <ReviewsView />}
-    
+      {active === "hotals  && reviews system in admin"}
+      {active === "hotals in mulugu and serives "}
+      {}
       {active === "staff" && <StaffView />}
       {/* {active === "receptionists" && <Placeholder title="Manage Receptionists" desc="Manage receptionist accounts and permissions." />} */}
       {active === "receptionists" && <ReceptionistsView />}
@@ -90,7 +92,7 @@ function AdminInner() {
 
 function DashboardView() {
   const [dashboard, setDashboard] = useState<any>(null);
-useEffect(() => {
+
   const fetchDashboard = async () => {
     try {
       const res = await API.get("/api/dashboard/");
@@ -101,8 +103,21 @@ useEffect(() => {
     }
   };
 
-  fetchDashboard();
-}, []);
+  useEffect(() => {
+    fetchDashboard();
+
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === "dashboard_refresh") {
+        fetchDashboard();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">

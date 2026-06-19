@@ -82,7 +82,7 @@ const items: SidebarItem[] = [
 
 
 function RecepGuard() {
-  // const { user } = useAuth();
+
   const { user, authLoading } = useAuth();
   if (authLoading) {
   return (
@@ -143,35 +143,49 @@ const fetchEventBookings = async () => {
   }
 };
 
-
 const handleCheckIn = async (id: number) => {
   try {
-    await axios.put(
-      `http://127.0.0.1:8000/bookings/check-in/${id}/`
+    await axios.patch(
+      `http://127.0.0.1:8000/bookings/checkin/${id}/`
+    );
+
+    localStorage.setItem(
+      "dashboard_refresh",
+      Date.now().toString()
     );
 
     fetchCheckIns();
     await fetchBookings();
   } catch (error) {
-    console.error("Check-in failed:", error);
+    console.error(error);
   }
 };
 
-const [replyForm, setReplyForm] = useState({
-  subject: "",
-  message: "",
-});
 
 
-  useEffect(() => {
+//   useEffect(() => {
+//   fetchBookings();
+//   fetchEnquiries();
+//   fetchCheckIns();
+//   fetchCheckOuts();
+//   fetchEventBookings();
+// }, []);
+
+useEffect(() => {
   fetchBookings();
   fetchEnquiries();
   fetchCheckIns();
   fetchCheckOuts();
   fetchEventBookings();
+
+  const interval = setInterval(() => {
+    fetchBookings();
+    fetchCheckIns();
+    fetchCheckOuts();
+  }, 1000); // every 3 sec
+
+  return () => clearInterval(interval);
 }, []);
-
-
 const replyToCustomer = async (
   enquiryId: number,
   subject: string,
@@ -224,10 +238,16 @@ const fetchCheckOuts = async () => {
     console.error(error);
   }
 };
+
 const handleCheckOut = async (id: number) => {
   try {
-    await axios.put(
-      `http://127.0.0.1:8000/bookings/check-out/${id}/`
+    await axios.patch(
+      `http://127.0.0.1:8000/bookings/checkout/${id}/`
+    );
+
+    localStorage.setItem(
+      "dashboard_refresh",
+      Date.now().toString()
     );
 
     fetchCheckOuts();
