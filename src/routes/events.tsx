@@ -35,11 +35,15 @@ useEffect(() => {
 
 const fetchCategories = async () => {
   try {
-    const response = await API.get(
-      "/api/events/categories/"
+    const response = await fetch(
+      "http://127.0.0.1:8000/api/events/categories/"
     );
 
-    setCategories(response.data);
+    const data = await response.json();
+
+    console.log("EVENT DATA:", data);
+
+    setCategories(data);
   } catch (error) {
     console.error("Category load failed", error);
   }
@@ -218,18 +222,6 @@ setShowSuccessModal(true);
             {event.description}
           </p>
 
-{/* <button
-  onClick={() => {
-    document
-      .getElementById("booking")
-      ?.scrollIntoView({
-        behavior: "smooth",
-      });
-  }}
-  className="mt-5 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 px-5 py-2 text-sm font-semibold text-white"
->
-  Book Now
-</button> */}
 <button
   onClick={() => {
     setFormData({

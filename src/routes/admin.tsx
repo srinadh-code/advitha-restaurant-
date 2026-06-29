@@ -588,7 +588,7 @@ return (
         >
           <div className="h-52 overflow-hidden">
             <img
-              src={`http://127.0.0.1:8000${room.image}`}
+              src={room.image_url}
               alt={room.title}
               className="h-full w-full object-cover"
             />
@@ -2905,7 +2905,7 @@ const fetchReceptionists = async () => {
     const token = localStorage.getItem("access");
 
     const res = await API.get(
-      "/receptionists/create/",
+      "/api/accounts/receptionists/create/",
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -2933,7 +2933,7 @@ const createReceptionist = async () => {
     const token = localStorage.getItem("access");
 
     await API.post(
-      "/receptionists/create/",
+      "/api/accounts/receptionists/create/",
       form,
       {
         headers: {
@@ -2971,7 +2971,7 @@ const deleteReceptionist = async (id: number) => {
     const token = localStorage.getItem("access");
 
     await API.delete(
-      `/receptionists/${id}/`,
+      `/api/accounts/receptionists/create/${id}/`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
