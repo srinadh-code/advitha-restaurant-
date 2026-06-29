@@ -63,37 +63,42 @@ export function AuthProvider({
   const [user, setUser] = useState<AuthUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
 
-  // useEffect(() => {
-  //   try {
-  //     const raw = localStorage.getItem(USER_KEY);
+  const syncUserFromStorage = () => {
+    try {
+      const raw = localStorage.getItem(USER_KEY);
 
-  //     if (raw) {
-  //       setUser(JSON.parse(raw));
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }, []);
-  useEffect(() => {
-  try {
-    const raw = localStorage.getItem(USER_KEY);
-
-    if (raw) {
-      setUser(JSON.parse(raw));
+      if (raw) {
+        setUser(JSON.parse(raw));
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error(error);
+      setUser(null);
+    } finally {
+      setAuthLoading(false);
     }
-  } catch (error) {
-    console.error(error);
-  } finally {
-    setAuthLoading(false);
-  }
-}, []);
+  };
+
+  useEffect(() => {
+    syncUserFromStorage();
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === USER_KEY || event.key === ACCESS_KEY || event.key === REFRESH_KEY) {
+        syncUserFromStorage();
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   const login: Ctx["login"] = async (
     email,
     password
   ) => {
     try {
-      const response = await API.post("/login/", {
+      const response = await API.post("/api/accounts/login/", {
         email,
         password,
       });
@@ -143,7 +148,7 @@ export function AuthProvider({
     password
   ) => {
     try {
-      await API.post("/signup/", {
+      await API.post("/api/accounts/signup/", {
         first_name,
         last_name: "",
         email,

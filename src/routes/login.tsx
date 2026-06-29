@@ -37,8 +37,12 @@ function LoginPage() {
 }
 
 function Inner() {
-  const { login, setUser, user } = useAuth();
+  const { login, user, setUser } = useAuth();
   const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   if (user) {
     if (user.role === "admin") {
@@ -51,10 +55,6 @@ function Inner() {
 
     return <Navigate to="/" />;
   }
-
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   // const { login } = useAuth();
 
 
@@ -90,7 +90,7 @@ function Inner() {
   ) => {
     try {
       const response = await API.post(
-        "/google-login/",
+        "/api/accounts/google-login/",
         {
           token: credentialResponse.credential,
         }
@@ -106,9 +106,18 @@ function Inner() {
         response.data.refresh
       );
 
+      const loggedUser = {
+        id: response.data.user.id,
+        email: response.data.user.email,
+        first_name: response.data.user.first_name,
+        last_name: response.data.user.last_name,
+        role: response.data.user.role,
+      };
+
+      setUser(loggedUser);
       localStorage.setItem(
         "mulugu.auth",
-        JSON.stringify(response.data.user)
+        JSON.stringify(loggedUser)
       );
       // window.location.reload();
 

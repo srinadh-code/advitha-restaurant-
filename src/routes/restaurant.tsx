@@ -51,7 +51,7 @@ function RestaurantPage() {
 
   const fetchFoods = async () => {
     try {
-      const response = await API.get("/api/foods/");
+      const response = await API.get("/api/food/foods/");
       setFoods(response.data);
     } catch (error) {
       console.error("Error fetching foods:", error);
@@ -61,7 +61,7 @@ function RestaurantPage() {
   };
   const fetchCategories = async () => {
   try {
-    const response = await API.get("/api/categories/");
+    const response = await API.get("/api/food/categories/");
     setCategories(response.data);
   } catch (error) {
     console.error("Error fetching categories:", error);

@@ -240,7 +240,7 @@ function BookPage() {
   const [confirm, setConfirm] =
     useState<typeof initial | null>(null);
 useEffect(() => {
-  fetch("http://127.0.0.1:8000/rooms/")
+  fetch("http://127.0.0.1:8000/api/rooms/")
     .then((res) => res.json())
     .then((data) => {
       console.log("ROOMS =", data);
@@ -252,6 +252,12 @@ useEffect(() => {
     e: React.FormEvent
   ) => {
     e.preventDefault();
+    const token = localStorage.getItem("access");
+
+  if (!token) {
+    toast.error("Please login to book a room.");
+    return;
+  }
 
     const res = schema.safeParse(form);
 
@@ -277,7 +283,7 @@ console.log("FORM =", form);
 console.log("BOOKING DATA =", bookingData);
 
       const response = await fetch(
-        "http://127.0.0.1:8000/bookings/",
+        "http://127.0.0.1:8000/api/bookings/",
         {
           method: "POST",
           headers: {
@@ -293,6 +299,12 @@ console.log("BOOKING DATA =", bookingData);
       const data =
         await response.json();
 
+
+        if (response.status === 401) {
+  localStorage.removeItem("access");
+  toast.error("Your session has expired. Please login again.");
+  return;
+}
       if (response.ok) {
         toast.success(
           "Booking Submitted Successfully"
@@ -307,8 +319,10 @@ console.log("BOOKING DATA =", bookingData);
         console.log(data);
 
         toast.error(
-          "Booking Failed"
-        );
+  data.message ||
+  Object.values(data).flat().join(", ") ||
+  "Booking Failed"
+);
       }
     } catch (error) {
       console.error(error);

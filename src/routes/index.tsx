@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { Bed, UtensilsCrossed, Wifi, Car, ConciergeBell, PartyPopper, Star, ArrowRight, MapPin } from "lucide-react";
 // import hotelExterior from "@/assets/hotel-exterior.jpg";
 import hotelExterior from "@/assets/advitha.png";
-
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { SectionHeading } from "@/components/SectionHeading";
 import { REVIEWS, HOTEL } from "@/lib/mockData";
@@ -40,6 +39,7 @@ interface Room {
   title: string;
   room_type: string;
   image: string;
+  image_url: string;
   description: string;
   price: string;
 }
@@ -49,6 +49,7 @@ interface TourismPlace {
   category: string;
   description: string;
   image: string;
+  image_url: string;
   distance: string;
 }
 
@@ -66,17 +67,10 @@ useEffect(() => {
   fetchTourismPlaces();
 }, []);
 
-// const fetchFoods = async () => {
-//   try {
-//     const response = await API.get("/api/foods/");
-//     setFeaturedFoods(response.data.slice(0, 6));
-//   } catch (error) {
-//     console.error("Error fetching foods:", error);
-//   }
-// };
+
 const fetchFoods = async () => {
   try {
-    const response = await API.get("/api/foods/");
+    const response = await API.get("/api/food/foods/");
     const foods = response.data;
 
     const veg = foods
@@ -113,28 +107,12 @@ const fetchFoods = async () => {
 
 const fetchRooms = async () => {
   try {
-    const response = await API.get("/rooms/");
+    const response = await API.get("/api/rooms/");
     setFeaturedRooms(response.data.slice(0, 3));
   } catch (error) {
     console.error("Error fetching rooms:", error);
   }
 };
-// const fetchTourismPlaces = async () => {
-//   try {
-//     const response = await API.get(
-//       "/api/tourism/places/"
-//     );
-
-//     setFeaturedTourism(
-//       response.data.slice(0, 4)
-//     );
-//   } catch (error) {
-//     console.error(
-//       "Error fetching tourism places:",
-//       error
-//     );
-//   }
-// };
 
 const fetchTourismPlaces = async () => {
   try {
@@ -291,8 +269,8 @@ const fetchTourismPlaces = async () => {
       {/* Room Image */}
       <div className="relative h-56 overflow-hidden">
         <motion.img
-          src={`http://127.0.0.1:8000${r.image}`}
-          alt={r.title}
+  src={r.image_url}
+  alt={r.title}
           initial={{
             opacity: 0,
             y: 15,
@@ -584,8 +562,8 @@ const fetchTourismPlaces = async () => {
           {/* Image */}
           <div className="relative h-44 overflow-hidden">
             <motion.img
-              src={t.image}
-              alt={t.name}
+  src={t.image_url}
+  alt={t.name}
               initial={{
                 opacity: 0,
                 y: 15,

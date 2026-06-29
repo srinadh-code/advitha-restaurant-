@@ -199,7 +199,7 @@ setShowSuccessModal(true);
       >
         <div className="overflow-hidden">
           <img
-            src={`http://127.0.0.1:8000${event.image}`}
+            src={event.image_url}
             alt={event.title}
             className="h-72 w-full object-cover transition duration-500 group-hover:scale-110"
           />

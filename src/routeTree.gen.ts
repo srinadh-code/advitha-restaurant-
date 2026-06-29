@@ -17,6 +17,7 @@ import { Route as RoomsRouteImport } from './routes/rooms'
 import { Route as RestaurantRouteImport } from './routes/restaurant'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ReceptionistRouteImport } from './routes/receptionist'
+import { Route as MyBookingsRouteImport } from './routes/my-bookings'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
@@ -65,6 +66,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const ReceptionistRoute = ReceptionistRouteImport.update({
   id: '/receptionist',
   path: '/receptionist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyBookingsRoute = MyBookingsRouteImport.update({
+  id: '/my-bookings',
+  path: '/my-bookings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
+  '/my-bookings': typeof MyBookingsRoute
   '/receptionist': typeof ReceptionistRoute
   '/reset-password': typeof ResetPasswordRoute
   '/restaurant': typeof RestaurantRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
+  '/my-bookings': typeof MyBookingsRoute
   '/receptionist': typeof ReceptionistRoute
   '/reset-password': typeof ResetPasswordRoute
   '/restaurant': typeof RestaurantRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
+  '/my-bookings': typeof MyBookingsRoute
   '/receptionist': typeof ReceptionistRoute
   '/reset-password': typeof ResetPasswordRoute
   '/restaurant': typeof RestaurantRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/gallery'
     | '/login'
+    | '/my-bookings'
     | '/receptionist'
     | '/reset-password'
     | '/restaurant'
@@ -202,6 +212,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/gallery'
     | '/login'
+    | '/my-bookings'
     | '/receptionist'
     | '/reset-password'
     | '/restaurant'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/gallery'
     | '/login'
+    | '/my-bookings'
     | '/receptionist'
     | '/reset-password'
     | '/restaurant'
@@ -241,6 +253,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
+  MyBookingsRoute: typeof MyBookingsRoute
   ReceptionistRoute: typeof ReceptionistRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   RestaurantRoute: typeof RestaurantRoute
@@ -307,6 +320,13 @@ declare module '@tanstack/react-router' {
       path: '/receptionist'
       fullPath: '/receptionist'
       preLoaderRoute: typeof ReceptionistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-bookings': {
+      id: '/my-bookings'
+      path: '/my-bookings'
+      fullPath: '/my-bookings'
+      preLoaderRoute: typeof MyBookingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -385,6 +405,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
+  MyBookingsRoute: MyBookingsRoute,
   ReceptionistRoute: ReceptionistRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   RestaurantRoute: RestaurantRoute,

@@ -58,19 +58,38 @@ export function Navbar() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-2">
-          {user ? (
-            <>
-              <Link
-                to={user.role === "admin" ? "/admin" : user.role === "receptionist" ? "/receptionist" : "/"}
-                className="text-sm font-medium text-foreground/80 hover:text-primary"
-              >
-                {user.name}
-              </Link>
-              <button onClick={logout} className="rounded-md border border-border px-3 py-1.5 text-sm hover:bg-secondary">
-                Logout
-              </button>
-            </>
-          ) : (
+        {user ? (
+  <>
+    {user.role === "customer" && (
+      <Link
+        to="/my-bookings"
+        className="text-sm font-medium text-foreground/80 hover:text-primary"
+      >
+        My Bookings
+      </Link>
+    )}
+
+    <Link
+      to={
+        user.role === "admin"
+          ? "/admin"
+          : user.role === "receptionist"
+          ? "/receptionist"
+          : "/"
+      }
+      className="text-sm font-medium text-foreground/80 hover:text-primary"
+    >
+      {user.name}
+    </Link>
+
+    <button
+      onClick={logout}
+      className="rounded-md border border-border px-3 py-1.5 text-sm hover:bg-secondary"
+    >
+      Logout
+    </button>
+  </>
+) : (
             <Link to="/login" className="rounded-md border border-border px-3 py-1.5 text-sm hover:bg-secondary">
               Login
             </Link>
@@ -97,10 +116,37 @@ export function Navbar() {
               </Link>
             ))}
             {user ? (
-              <button onClick={() => { logout(); setOpen(false); }} className="py-2 text-left text-sm font-medium">
-                Logout ({user.name})
-              </button>
-            ) : (
+  <>
+    {user.role === "customer" && (
+      <Link
+        to="/my-bookings"
+        className="text-sm font-medium text-foreground/80 hover:text-primary"
+      >
+        My Bookings
+      </Link>
+    )}
+
+    <Link
+      to={
+        user.role === "admin"
+          ? "/admin"
+          : user.role === "receptionist"
+          ? "/receptionist"
+          : "/"
+      }
+      className="text-sm font-medium text-foreground/80 hover:text-primary"
+    >
+      {user.name}
+    </Link>
+
+    <button
+      onClick={logout}
+      className="rounded-md border border-border px-3 py-1.5 text-sm hover:bg-secondary"
+    >
+      Logout
+    </button>
+  </>
+) : (
               <Link to="/login" onClick={() => setOpen(false)} className="py-2 text-sm font-medium">Login</Link>
             )}
             <Link to="/book" onClick={() => setOpen(false)} className="my-2 rounded-md gradient-gold px-4 py-2 text-center text-sm font-semibold text-gold-foreground">

@@ -228,19 +228,134 @@ function DashboardView() {
   );
 }
 
+// function BookingsView() {
+//   const [bookings, setBookings] = useState<any[]>([]);
+
+//   useEffect(() => {
+//     fetch("http://127.0.0.1:8000/api/bookings/")
+//       .then((res) => res.json())
+//       .then((data) => {
+//         setBookings(data);
+//       })
+//       .catch((err) => {
+//         console.error(err);
+//       });
+//   }, []);
+
+//   return (
+//     <div className="space-y-6">
+
+//       <div className="flex justify-between items-center">
+//         <h2 className="text-3xl font-bold text-[#3E2414]">
+//           Booking Management
+//         </h2>
+
+//         <div className="bg-[#C69214] text-white px-4 py-2 rounded-xl">
+//           Total Bookings: {bookings.length}
+//         </div>
+//       </div>
+
+//       <div className="bg-white rounded-3xl shadow-md border overflow-hidden">
+
+//         <table className="w-full">
+
+//           <thead className="bg-[#F5E7C5]">
+
+//             <tr>
+//               <th className="p-4 text-left">ID</th>
+//               <th className="p-4 text-left">Guest</th>
+//               <th className="p-4 text-left">Email</th>
+//               <th className="p-4 text-left">Phone</th>
+//               <th className="p-4 text-left">Room</th>
+//               <th className="p-4 text-left">Check In</th>
+//               <th className="p-4 text-left">Check Out</th>
+//               <th className="p-4 text-left">Guests</th>
+//             </tr>
+
+//           </thead>
+
+//           <tbody>
+
+//             {bookings.map((booking: any) => (
+
+//               <tr
+//                 key={booking.id}
+//                 className="border-b hover:bg-gray-50"
+//               >
+
+//                 <td className="p-4">
+//                   #{booking.id}
+//                 </td>
+
+//                 <td className="p-4 font-medium">
+//                   {booking.full_name}
+//                 </td>
+
+//                 <td className="p-4">
+//                   {booking.email}
+//                 </td>
+
+//                 <td className="p-4">
+//                   {booking.phone}
+//                 </td>
+
+//                 <td className="p-4">
+//                   {booking.room_name || booking.room}
+//                 </td>
+
+//                 <td className="p-4">
+//                   {booking.check_in}
+//                 </td>
+
+//                 <td className="p-4">
+//                   {booking.check_out}
+//                 </td>
+
+//                 <td className="p-4">
+//                   {booking.guests}
+//                 </td>
+
+//               </tr>
+
+//             ))}
+
+//           </tbody>
+
+//         </table>
+
+//       </div>
+
+//     </div>
+//   );
+// }
+  
+  
 function BookingsView() {
   const [bookings, setBookings] = useState<any[]>([]);
 
+  
+
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/bookings/")
-      .then((res) => res.json())
-      .then((data) => {
-        setBookings(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
+  const token = localStorage.getItem("access");
+
+  fetch("http://127.0.0.1:8000/api/bookings/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Failed to fetch bookings");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      setBookings(data);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}, []);
 
   return (
     <div className="space-y-6">
@@ -328,8 +443,6 @@ function BookingsView() {
     </div>
   );
 }
-  
-  
 
 function RoomsView() {
   const [rooms, setRooms] = useState<any[]>([]);
@@ -342,7 +455,7 @@ function RoomsView() {
 
   const fetchRooms = async () => {
     try {
-      const response = await API.get("/rooms/");
+      const response = await API.get("/api/rooms/");
       setRooms(response.data);
     } catch (error) {
       console.error(error);
@@ -356,7 +469,7 @@ const handleEdit = (room: any) => {
 
   const handleDelete = async (id: number) => {
     try {
-      await API.delete(`/rooms/${id}/`);
+      await API.delete(`/api/rooms/${id}/`);
       fetchRooms();
     } catch (error) {
       console.error(error);
@@ -388,7 +501,7 @@ const updateRoom = async () => {
     }
 
     await API.patch(
-      `/rooms/${selectedRoom.id}/`,
+      `/api/rooms/${selectedRoom.id}/`,
       data
     );
 
@@ -427,7 +540,7 @@ data.append("feature4", selectedRoom.feature4);
       data.append("image", image);
     }
 
-    await API.post("/rooms/", data);
+  await API.post("/api/rooms/", data);
 
     fetchRooms();
 
@@ -710,7 +823,7 @@ function RestaurantView() {
   });
   const fetchCategories = async () => {
   try {
-    const response = await API.get("/api/categories/");
+    const response = await API.get("/api/food/categories/");
     setCategories(response.data);
   } catch (error) {
     console.log(error);
@@ -721,7 +834,7 @@ function RestaurantView() {
 
   const fetchFoods = async () => {
     try {
-      const response = await API.get("/api/foods/");
+      const response = await API.get("/api/food/foods/");
       setFoods(response.data);
     } catch (error) {
       console.error("Error fetching foods:", error);

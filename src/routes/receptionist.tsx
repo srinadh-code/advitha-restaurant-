@@ -112,6 +112,14 @@ const [selectedBooking, setSelectedBooking] =
   const [enquiries, setEnquiries] = useState<any[]>([]);
   const [active, setActive] = useState("dashboard");
   const [bookings, setBookings] = useState<any[]>([]);
+
+
+
+
+const [replyForm, setReplyForm] = useState({
+  subject: "",
+  message: "",
+});
   const [loading, setLoading] = useState(true);
   const [selectedEnquiry, setSelectedEnquiry] = useState<any>(null);
   const [checkIns, setCheckIns] = useState<any[]>([]);
@@ -119,11 +127,53 @@ const [selectedBooking, setSelectedBooking] =
 
   const [eventBookings, setEventBookings] = useState<any[]>([]);
 
+
+
+// const roomCategories = [
+//   {
+//     id: 1,
+//     name: "Deluxe Room",
+//     totalRooms: 10,
+//     availableRooms: 7,
+//     price: 2499,
+//     image:
+//       "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+//   },
+  // {
+  //   id: 2,
+  //   name: "Executive Room",
+  //   totalRooms: 10,
+  //   availableRooms: 4,
+  //   price: 4299,
+  //   image:
+  //     "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+  // },
+  // {
+  //   id: 3,
+  //   name: "Family Room",
+  //   totalRooms: 10,
+  //   availableRooms: 8,
+  //   price: 5499,
+  //   image:
+  //     "https://images.unsplash.com/photo-1590490360182-c33d57733427",
+  // },
+  // {
+  //   id: 4,
+  //   name: "Suite Room",
+  //   totalRooms: 10,
+  //   availableRooms: 2,
+  //   price: 7999,
+  //   image:
+  //     "https://images.unsplash.com/photo-1578683010236-d716f9a3f461",
+  // },
+// ];
+
 const fetchCheckIns = async () => {
   try {
-    const res = await axios.get(
-      "http://127.0.0.1:8000/bookings/check-in/"
-    );
+    // const res = await axios.get(
+    //   "http://127.0.0.1:8000/api/bookings/check-in/"
+    // );
+    const res = await API.get("api/bookings/check-in/");
 
     setCheckIns(res.data);
   } catch (error) {
@@ -145,9 +195,10 @@ const fetchEventBookings = async () => {
 
 const handleCheckIn = async (id: number) => {
   try {
-    await axios.patch(
-      `http://127.0.0.1:8000/bookings/checkin/${id}/`
-    );
+    // await axios.patch(
+    //   `http://127.0.0.1:8000/api/bookings/checkin/${id}/`
+    // );
+    await API.patch(`/api/bookings/checkin/${id}/`);
 
     localStorage.setItem(
       "dashboard_refresh",
@@ -182,7 +233,7 @@ useEffect(() => {
     fetchBookings();
     fetchCheckIns();
     fetchCheckOuts();
-  }, 1000); // every 3 sec
+  }, 3000); // every 3 sec
 
   return () => clearInterval(interval);
 }, []);
@@ -210,27 +261,26 @@ const data = response.data;
   }
 };
 
+
 const fetchEnquiries = async () => {
   try {
-    const response = await API.get(
-  "/api/contact/receptionist/"
-);
-
-const data = response.data;
-
-setEnquiries(data);
-
-    setEnquiries(data);
+    const response = await API.get("/api/contact/enquiries/");
+    console.log("ENQUIRIES:", response.data);
+    setEnquiries(response.data);
   } catch (error) {
-    console.error("Error loading enquiries:", error);
+    console.error(error);
   }
 };
+
+
+
+
 
 
 const fetchCheckOuts = async () => {
   try {
     const res = await axios.get(
-      "http://127.0.0.1:8000/bookings/check-out/"
+      "http://127.0.0.1:8000/api/bookings/check-out/"
     );
 
     setCheckOuts(res.data);
@@ -241,9 +291,10 @@ const fetchCheckOuts = async () => {
 
 const handleCheckOut = async (id: number) => {
   try {
-    await axios.patch(
-      `http://127.0.0.1:8000/bookings/checkout/${id}/`
-    );
+    // await axios.patch(
+    //   `http://127.0.0.1:8000/api/bookings/checkout/${id}/`
+    // );
+    await API.patch(`/api/bookings/checkout/${id}/`);
 
     localStorage.setItem(
       "dashboard_refresh",
@@ -676,7 +727,7 @@ const filteredBookings = bookings.filter((booking) => {
 )}
       {/* Available Rooms */}
 
-      {active === "available-rooms" && (
+      {/* {active === "available-rooms" && (
         <DataTable
           columns={[
             "Room Number",
@@ -711,7 +762,50 @@ const filteredBookings = bookings.filter((booking) => {
             ],
           ]}
         />
-      )}
+      )} */}
+      {active === "available-rooms" && (
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+    {roomCategories.map((room) => (
+      <div
+        key={room.id}
+        className="bg-white rounded-xl shadow overflow-hidden"
+      >
+        <img
+          src={room.image}
+          alt={room.name}
+          className="w-full h-52 object-cover"
+        />
+
+        <div className="p-4">
+          <h2 className="text-xl font-bold">
+            {room.name}
+          </h2>
+
+          <p className="text-gray-500 mt-1">
+            Total Rooms: {room.totalRooms}
+          </p>
+
+          <p className="font-semibold mt-2">
+            ₹{room.price}/Night
+          </p>
+
+          <div className="flex gap-2 mt-4">
+            <button className="bg-green-600 text-white px-3 py-2 rounded-lg">
+              Available ({room.availableRooms})
+            </button>
+
+            <button className="bg-red-600 text-white px-3 py-2 rounded-lg">
+              Occupied (
+              {room.totalRooms -
+                room.availableRooms}
+              )
+            </button>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
 
       {/* Customers */}
 

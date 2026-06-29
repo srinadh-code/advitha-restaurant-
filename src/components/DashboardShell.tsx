@@ -69,14 +69,7 @@ export function DashboardShell({
   );
 }
 
-// export function StatCard({ label, value, accent }: { label: string; value: string | number; accent?: string }) {
-//   return (
-//     <div className="rounded-2xl bg-card border border-border p-5 shadow-soft">
-//       <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
-//       <p className={`mt-2 font-display text-3xl font-bold ${accent ?? "text-foreground"}`}>{value}</p>
-//     </div>
-//   );
-// }
+
 export function StatCard({
   label,
   value,

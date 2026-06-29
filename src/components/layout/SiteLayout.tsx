@@ -4,13 +4,11 @@ import { TopBar } from "./TopBar";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { FloatingActions } from "./FloatingActions";
-import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   return (
-    <AuthProvider>
-      <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
         <TopBar />
         <Navbar />
         <motion.main
@@ -25,6 +23,5 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         <FloatingActions />
         <Toaster />
       </div>
-    </AuthProvider>
   );
 }
