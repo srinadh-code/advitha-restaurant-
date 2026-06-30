@@ -1,6 +1,3 @@
-
-
-
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -56,7 +53,7 @@ function Page() {
       setLoading(true);
 
       const response = await API.post(
-        "/forgot-password/",
+        "/api/accounts/forgot-password/",
         {
           email,
         }

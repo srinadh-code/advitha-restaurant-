@@ -129,50 +129,11 @@ const [replyForm, setReplyForm] = useState({
 
 
 
-// const roomCategories = [
-//   {
-//     id: 1,
-//     name: "Deluxe Room",
-//     totalRooms: 10,
-//     availableRooms: 7,
-//     price: 2499,
-//     image:
-//       "https://images.unsplash.com/photo-1566073771259-6a8506099945",
-//   },
-  // {
-  //   id: 2,
-  //   name: "Executive Room",
-  //   totalRooms: 10,
-  //   availableRooms: 4,
-  //   price: 4299,
-  //   image:
-  //     "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
-  // },
-  // {
-  //   id: 3,
-  //   name: "Family Room",
-  //   totalRooms: 10,
-  //   availableRooms: 8,
-  //   price: 5499,
-  //   image:
-  //     "https://images.unsplash.com/photo-1590490360182-c33d57733427",
-  // },
-  // {
-  //   id: 4,
-  //   name: "Suite Room",
-  //   totalRooms: 10,
-  //   availableRooms: 2,
-  //   price: 7999,
-  //   image:
-  //     "https://images.unsplash.com/photo-1578683010236-d716f9a3f461",
-  // },
-// ];
+
 
 const fetchCheckIns = async () => {
   try {
-    // const res = await axios.get(
-    //   "http://127.0.0.1:8000/api/bookings/check-in/"
-    // );
+  
     const res = await API.get("api/bookings/check-in/");
 
     setCheckIns(res.data);
@@ -192,12 +153,18 @@ const fetchEventBookings = async () => {
     console.error("Error loading event bookings:", error);
   }
 };
+const confirmEventBooking = async (id: number) => {
+  try {
+    await API.patch(`/api/events/bookings/${id}/`);
+    fetchEventBookings(); // refresh table
+  } catch (error) {
+    console.error("Error confirming booking:", error);
+  }
+};
 
 const handleCheckIn = async (id: number) => {
   try {
-    // await axios.patch(
-    //   `http://127.0.0.1:8000/api/bookings/checkin/${id}/`
-    // );
+  
     await API.patch(`/api/bookings/checkin/${id}/`);
 
     localStorage.setItem(
@@ -214,13 +181,7 @@ const handleCheckIn = async (id: number) => {
 
 
 
-//   useEffect(() => {
-//   fetchBookings();
-//   fetchEnquiries();
-//   fetchCheckIns();
-//   fetchCheckOuts();
-//   fetchEventBookings();
-// }, []);
+
 
 useEffect(() => {
   fetchBookings();
@@ -228,6 +189,8 @@ useEffect(() => {
   fetchCheckIns();
   fetchCheckOuts();
   fetchEventBookings();
+
+  
 
   const interval = setInterval(() => {
     fetchBookings();
@@ -620,7 +583,6 @@ const filteredBookings = bookings.filter((booking) => {
     )}
   </>
 )}
-
 {active === "event-bookings" && (
   <DataTable
     columns={[
@@ -631,6 +593,7 @@ const filteredBookings = bookings.filter((booking) => {
       "Guests",
       "Category",
       "Status",
+      "Action",
     ]}
     rows={eventBookings.map((booking) => [
       booking.id,
@@ -639,40 +602,25 @@ const filteredBookings = bookings.filter((booking) => {
       booking.event_date,
       booking.guests,
       booking.category,
-      booking.status,
+
+      <span>
+        {booking.status}
+      </span>,
+
+      booking.status === "pending" ? (
+        <button
+          onClick={() => confirmEventBooking(booking.id)}
+          className="px-3 py-1 bg-green-600 text-white rounded"
+        >
+          Confirm
+        </button>
+      ) : (
+        "-"
+      ),
     ])}
   />
 )}
-      {/* Check In */}
-
-      {/* {active === "check-in" && (
-        <DataTable
-          columns={[
-            "Booking ID",
-            "Guest",
-            "Room",
-            "Status",
-            "Action",
-          ]}
-          rows={[
-            [
-              "#102",
-              "Ramesh",
-              "204",
-              "Booked",
-              "Check-In",
-            ],
-            [
-              "#105",
-              "Anitha",
-              "305",
-              "Booked",
-              "Check-In",
-            ],
-          ]}
-        />
-      )} */}
-
+    
       {/* Check Out */}
 
      {active === "check-in" && (
@@ -697,8 +645,9 @@ const filteredBookings = bookings.filter((booking) => {
         Check-In
       </button>,
     ])}
-  />
+    />
 )}
+
 
       {/* Check Out */}
 {active === "check-out" && (

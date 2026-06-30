@@ -61,7 +61,7 @@ function VerifyOTPPage() {
       setLoading(true);
 
       await API.post(
-        "/verify-otp/",
+        "/api/accounts/verify-otp/",
         {
           email,
           otp,

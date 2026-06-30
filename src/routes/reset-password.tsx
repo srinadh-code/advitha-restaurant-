@@ -46,9 +46,9 @@ function ResetPasswordPage() {
     if (!password.trim()) {
       newErrors.password = "Password is required";
       isValid = false;
-    } else if (password.length < 4) {
+    } else if (password.length < 8) {
       newErrors.password =
-        "Password must be more than 3 characters";
+        "Password must be more than 8 characters";
       isValid = false;
     }
 
@@ -70,7 +70,7 @@ function ResetPasswordPage() {
       setLoading(true);
 
       await API.post(
-        "/reset-password/",
+        "/api/accounts/reset-password/",
         {
           email,
           otp,
@@ -87,8 +87,13 @@ function ResetPasswordPage() {
       });
 
     } catch (error: any) {
+      console.log("Status:", error.response?.status);
+      console.log("Data:", error.response?.data);
+      console.log(error.response?.data.email)
+
       toast.error(
         error.response?.data?.error ||
+        error.response?.data?.message ||
         "Failed to reset password"
       );
     } finally {

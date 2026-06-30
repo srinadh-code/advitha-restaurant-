@@ -4,7 +4,7 @@ import funnnImage from "@/assets/funnn.png";
 import enjoyImg from "@/assets/enjoy.jpeg";
 import settingImg from "@/assets/setting.avif";
 import { SiteLayout } from "@/components/layout/SiteLayout";
-
+import {useNavigate} from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import API from "@/api/api";
 
@@ -29,6 +29,7 @@ const [formData, setFormData] = useState({
 });
 const [categories, setCategories] = useState<any[]>([]);
 const [loading, setLoading] = useState(false);
+const navigate = useNavigate();
 useEffect(() => {
   fetchCategories();
 }, []);
@@ -82,17 +83,19 @@ setShowSuccessModal(true);
   }  catch (error: any) {
   console.log("FULL ERROR:", error.response?.data);
 
-  const backendError = error.response?.data;
-
-  if (backendError?.error) {
-    setErrorMessage(backendError.error);
+  if (error.response?.status === 401) {
+    setErrorMessage("Please login first for booking.");
   } else {
-    setErrorMessage("Something went wrong");
+    const backendError = error.response?.data;
+
+    if (backendError?.error) {
+      setErrorMessage(backendError.error);
+    } else {
+      setErrorMessage("Something went wrong");
+    }
   }
 
   setShowErrorModal(true);
-} finally {
-  setLoading(false);
 }
 };
   const packages = [
@@ -293,6 +296,7 @@ setShowSuccessModal(true);
   <input
     type="text"
     placeholder="Name"
+    required
     value={formData.name}
     onChange={(e) =>
       setFormData({
@@ -306,6 +310,7 @@ setShowSuccessModal(true);
   <input
     type="text"
     placeholder="Phone"
+    required
     value={formData.phone}
     onChange={(e) =>
       setFormData({
@@ -318,6 +323,7 @@ setShowSuccessModal(true);
 
   <input
     type="date"
+    required
     value={formData.event_date}
     onChange={(e) =>
       setFormData({
@@ -331,6 +337,7 @@ setShowSuccessModal(true);
   <input
     type="number"
     placeholder="Guests"
+    required
     value={formData.guests}
     onChange={(e) =>
       setFormData({
@@ -385,12 +392,26 @@ setShowSuccessModal(true);
         {errorMessage}
       </p>
 
-      <button
-        onClick={() => setShowErrorModal(false)}
-        className="mt-6 rounded-xl bg-red-500 px-6 py-3 text-white"
-      >
-        Close
-      </button>
+      <div className="mt-6 flex gap-3">
+  <button
+    onClick={() => setShowErrorModal(false)}
+    className="rounded-xl bg-red-500 px-6 py-3 text-white"
+  >
+    Close
+  </button>
+
+  {errorMessage === "Please login first for booking." && (
+    <button
+      onClick={() => {
+        setShowErrorModal(false);
+        navigate({ to: "/login" });
+      }}
+      className="rounded-xl bg-yellow-500 px-6 py-3 text-white"
+    >
+      Login
+    </button>
+  )}
+</div>
     </div>
   </div>
 )}

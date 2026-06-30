@@ -2971,7 +2971,7 @@ const deleteReceptionist = async (id: number) => {
     const token = localStorage.getItem("access");
 
     await API.delete(
-      `/api/accounts/receptionists/create/${id}/`,
+      `/api/accounts/receptionists/${id}/`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
