@@ -14,8 +14,7 @@ export type AuthUser = {
   last_name?: string;
   role: Role;
 };
-// type Ctx = {
-//   user: AuthUser | null;
+
 type Ctx = {
   user: AuthUser | null;
   authLoading: boolean;
@@ -62,23 +61,55 @@ export function AuthProvider({
 }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+const syncUserFromStorage = () => {
+  try {
+    const raw = localStorage.getItem(USER_KEY);
 
-  const syncUserFromStorage = () => {
-    try {
-      const raw = localStorage.getItem(USER_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
 
-      if (raw) {
-        setUser(JSON.parse(raw));
+      const validRoles = [
+        "admin",
+        "receptionist",
+        "customer",
+      ];
+
+      if (
+        parsed &&
+        typeof parsed.email === "string" &&
+        validRoles.includes(parsed.role)
+      ) {
+        setUser(parsed);
       } else {
+        localStorage.removeItem(USER_KEY);
         setUser(null);
       }
-    } catch (error) {
-      console.error(error);
+    } else {
       setUser(null);
-    } finally {
-      setAuthLoading(false);
     }
-  };
+  } catch (error) {
+    console.error(error);
+    setUser(null);
+  } finally {
+    setAuthLoading(false);
+  }
+};
+  // const syncUserFromStorage = () => {
+  //   try {
+  //     const raw = localStorage.getItem(USER_KEY);
+
+  //     if (raw) {
+  //       setUser(JSON.parse(raw));
+  //     } else {
+  //       setUser(null);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     setUser(null);
+  //   } finally {
+  //     setAuthLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     syncUserFromStorage();
@@ -176,15 +207,7 @@ export function AuthProvider({
   };
 
   return (
-    // <AuthContext.Provider
-    //   value={{
-    //     user,
-    //     setUser,
-    //     login,
-    //     signup,
-    //     logout,
-    //   }}
-    // >
+    
     <AuthContext.Provider
   value={{
     user,

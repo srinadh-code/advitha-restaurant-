@@ -84,33 +84,8 @@ function RestaurantPage() {
 
   return (
     <SiteLayout>
-      {/* Hero Section */}
+     
 
-      {/* <section className="relative h-[42vh] min-h-[320px] overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=80"
-          alt="Restaurant"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-
-        <div className="absolute inset-0 bg-black/60" />
-
-        <div className="relative z-10 container mx-auto h-full flex flex-col items-center justify-center px-4 text-center text-white">
-          <p className="text-xs uppercase tracking-[0.4em] text-gold">
-            Our Restaurant
-          </p>
-
-          <h1 className="mt-3 font-display text-4xl md:text-5xl font-bold">
-            A Feast For Every Guest
-          </h1>
-
-          <p className="mt-4 max-w-2xl text-white/80">
-            Enjoy authentic Telangana flavors, delicious family
-            dining, refreshing drinks, desserts and chef-crafted
-            specialties.
-          </p>
-        </div>
-      </section> */}
 
       {/* Menu Section */}
 
