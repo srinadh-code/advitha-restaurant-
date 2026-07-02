@@ -1,3 +1,4 @@
+
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -5,14 +6,18 @@ import { toast } from "sonner";
 import API from "@/api/api";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 
+
 export const Route = createFileRoute("/reset-password")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    email: String(search.email ?? ""),
+  }),
   component: ResetPasswordPage,
 });
 
 function ResetPasswordPage() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
+  const { email } = Route.useSearch();
   const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
 
@@ -116,13 +121,15 @@ function ResetPasswordPage() {
           >
 
             <div>
+              <label htmlFor="email">Email</label>
+
+
               <input
+                id="email"
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 placeholder="Email"
                 value={email}
-                onChange={(e) =>
-                  setEmail(e.target.value)
-                }
+                readOnly
               />
 
               {errors.email && (
@@ -133,8 +140,13 @@ function ResetPasswordPage() {
             </div>
 
             <div>
+              <label htmlFor="otp" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                OTP
+              </label>
               <input
+                id="otp"
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                inputMode="numeric"
                 placeholder="OTP"
                 value={otp}
                 onChange={(e) =>
@@ -150,15 +162,21 @@ function ResetPasswordPage() {
             </div>
 
             <div>
-              <input
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                placeholder="New Password"
-                type="password"
-                value={password}
-                onChange={(e) =>
-                  setPassword(e.target.value)
-                }
-              />
+              <label
+  htmlFor="password"
+  className="text-xs font-medium uppercase tracking-wider text-muted-foreground"
+>
+  New Password
+</label>
+
+<input
+  id="password"
+  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+  placeholder="New Password"
+  type="password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+/>
 
               {errors.password && (
                 <p className="text-red-500 text-xs mt-1">

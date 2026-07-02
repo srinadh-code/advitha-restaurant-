@@ -1,7 +1,15 @@
+
 // Captures the original Error out-of-band so server.ts can recover the stack
 // when h3 has already swallowed the throw into a generic 500 Response.
+//
+// NOTE:
+// This is module-level mutable state. In serverless/edge environments, a module
+// instance may be reused across multiple requests. To reduce the chance of
+// leaking error context between requests, the captured error is retained for a
+// maximum of 5 seconds (TTL) and is cleared immediately after being consumed.
 
 let lastCapturedError: { error: unknown; at: number } | undefined;
+
 const TTL_MS = 5_000;
 
 function record(error: unknown) {

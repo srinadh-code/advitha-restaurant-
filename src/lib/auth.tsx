@@ -29,23 +29,20 @@ type Ctx = {
   }>;
 
   signup: (
-    first_name: string,
-    email: string,
-    password: string
-  ) => Promise<{
+  first_name: string,
+  email: string,
+  password: string,
+  last_name?: string,
+  phone_number?: string
+) => Promise<{
     ok: boolean;
     error?: string;
   }>;
 
-  setUser: React.Dispatch<
-    React.SetStateAction<AuthUser | null>
-  >;
+  updateUser: (user: AuthUser) => void;
 
   logout: () => void;
 };
-
-
-
 
 
 const AuthContext = createContext<Ctx | null>(null);
@@ -61,6 +58,14 @@ export function AuthProvider({
 }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const updateUser = (newUser: AuthUser) => {
+  setUser(newUser);
+
+  localStorage.setItem(
+    USER_KEY,
+    JSON.stringify(newUser)
+  );
+};
 const syncUserFromStorage = () => {
   try {
     const raw = localStorage.getItem(USER_KEY);
@@ -94,22 +99,6 @@ const syncUserFromStorage = () => {
     setAuthLoading(false);
   }
 };
-  // const syncUserFromStorage = () => {
-  //   try {
-  //     const raw = localStorage.getItem(USER_KEY);
-
-  //     if (raw) {
-  //       setUser(JSON.parse(raw));
-  //     } else {
-  //       setUser(null);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     setUser(null);
-  //   } finally {
-  //     setAuthLoading(false);
-  //   }
-  // };
 
   useEffect(() => {
     syncUserFromStorage();
@@ -157,20 +146,23 @@ const syncUserFromStorage = () => {
       setUser(loggedUser);
 
       localStorage.setItem(
-        "mulugu.auth",
-        JSON.stringify(loggedUser)
-      );
+  USER_KEY,
+  JSON.stringify(loggedUser)
+);
 
       return {
         ok: true,
         role: loggedUser.role,
       };
-    } catch (error) {
-      return {
-        ok: false,
-        error: "Invalid email or password",
-      };
-    }
+    } catch (error: any) {
+  return {
+    ok: false,
+    error:
+      error?.response?.data?.error ||
+      error?.response?.data?.message ||
+      "Invalid email or password",
+  };
+}
   };
 
   const signup: Ctx["signup"] = async (
@@ -190,12 +182,15 @@ const syncUserFromStorage = () => {
       return {
         ok: true,
       };
-    } catch (error) {
-      return {
-        ok: false,
-        error: "Signup failed",
-      };
-    }
+    } catch (error: any) {
+  return {
+    ok: false,
+    error:
+      error?.response?.data?.message ||
+      error?.response?.data?.email?.[0] ||
+      "Signup failed",
+  };
+}
   };
 
   const logout = () => {
@@ -212,7 +207,7 @@ const syncUserFromStorage = () => {
   value={{
     user,
     authLoading,
-    setUser,
+    updateUser,
     login,
     signup,
     logout,

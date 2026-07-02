@@ -164,8 +164,8 @@ export const GALLERY = {
   ],
 } as const;
 
-export const DEMO_USERS = [
-  { email: "admin@mulugu.com", password: "admin123", role: "admin", name: "Admin User" },
-  { email: "reception@mulugu.com", password: "recep123", role: "receptionist", name: "Front Desk" },
-  { email: "user@mulugu.com", password: "user123", role: "customer", name: "Guest User" },
-] as const;
+// export const DEMO_USERS = [
+//   { email: "admin@mulugu.com", password: "admin123", role: "admin", name: "Admin User" },
+//   { email: "reception@mulugu.com", password: "recep123", role: "receptionist", name: "Front Desk" },
+//   { email: "user@mulugu.com", password: "user123", role: "customer", name: "Guest User" },
+// ] as const;

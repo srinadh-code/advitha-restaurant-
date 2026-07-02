@@ -5,14 +5,20 @@ import { toast } from "sonner";
 import API from "@/api/api";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 
+
+
 export const Route = createFileRoute("/verify-otp")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    email: String(search.email ?? ""),
+  }),
   component: VerifyOTPPage,
 });
 
 function VerifyOTPPage() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
+  const { email } = Route.useSearch();
   const [otp, setOtp] = useState("");
 
   const [errors, setErrors] = useState({
@@ -38,10 +44,10 @@ function VerifyOTPPage() {
     if (!otp.trim()) {
       newErrors.otp = "OTP is required";
       isValid = false;
-    } else if (otp.length !== 6) {
-      newErrors.otp = "OTP must be 6 digits";
-      isValid = false;
-    }
+    } else if (!/^\d{6}$/.test(otp)) {
+  newErrors.otp = "OTP must be exactly 6 digits";
+  isValid = false;
+}
 
     setErrors(newErrors);
 
@@ -74,6 +80,9 @@ function VerifyOTPPage() {
 
       navigate({
         to: "/reset-password",
+        search: {
+        email,
+        },
       });
 
     } catch (error: any) {
@@ -105,19 +114,19 @@ function VerifyOTPPage() {
           >
 
             <div>
+
+              <label
+  htmlFor="email"
+  className="text-xs font-medium uppercase tracking-wider text-muted-foreground"
+>
+  Email
+</label>
               <input
+                id="email"
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                placeholder="Email"
                 type="email"
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-
-                  setErrors({
-                    ...errors,
-                    email: "",
-                  });
-                }}
+                readOnly
               />
 
               {errors.email && (
@@ -128,7 +137,15 @@ function VerifyOTPPage() {
             </div>
 
             <div>
+              <label
+  htmlFor="otp"
+  className="text-xs font-medium uppercase tracking-wider text-muted-foreground"
+>
+  OTP
+</label>
               <input
+                id="otp"
+                inputMode="numeric"
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 placeholder="Enter OTP"
                 value={otp}

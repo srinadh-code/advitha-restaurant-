@@ -37,8 +37,9 @@ function LoginPage() {
 }
 
 function Inner() {
-  const { login, user, setUser } = useAuth();
+  const { login, user} = useAuth();
   const navigate = useNavigate();
+  const { updateUser } = useAuth();
 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -114,11 +115,7 @@ function Inner() {
         role: response.data.user.role,
       };
 
-      setUser(loggedUser);
-      localStorage.setItem(
-        "mulugu.auth",
-        JSON.stringify(loggedUser)
-      );
+      updateUser(loggedUser);
       // window.location.reload();
 
       toast.success(
