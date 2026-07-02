@@ -2,7 +2,7 @@ import API from "@/api/api";
 import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { getBookings } from "@/api/api";
-import axios from "axios";
+// import axios from "axios";
 import {
   LayoutDashboard,
   CalendarCheck,
@@ -62,12 +62,7 @@ const items: SidebarItem[] = [
   icon: CalendarCheck,
 },
 
-  {
-    key: "restaurant-reservations",
-    label: "Restaurant Reservations",
-    icon: UtensilsCrossed,
-  },
-
+  
   {
     key: "contact-enquiries",
     label: "Contact Enquiries",
@@ -124,12 +119,25 @@ const [replyForm, setReplyForm] = useState({
   const [selectedEnquiry, setSelectedEnquiry] = useState<any>(null);
   const [checkIns, setCheckIns] = useState<any[]>([]);
   const [checkOuts, setCheckOuts] = useState<any[]>([]);
+  const [dashboardStats, setDashboardStats] = useState({
+  occupied_rooms: 0,
+  available_rooms: 0,
+  restaurant_reservations: 0,
+});
+const [rooms, setRooms] = useState([]);
 
   const [eventBookings, setEventBookings] = useState<any[]>([]);
 
 
 
-
+const fetchDashboardStats = async () => {
+  try {
+    const response = await API.get("/api/dashboard/");
+    setDashboardStats(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const fetchCheckIns = async () => {
   try {
@@ -146,8 +154,6 @@ const fetchEventBookings = async () => {
     const response = await API.get(
       "/api/events/bookings/"
     );
-
-    console.log(response.data); // debug
     setEventBookings(response.data);
   } catch (error) {
     console.error("Error loading event bookings:", error);
@@ -179,7 +185,11 @@ const handleCheckIn = async (id: number) => {
   }
 };
 
-
+const fetchRooms = async () => {
+  const response = await API.get("/api/rooms/");
+  setRooms(response.data);
+  console.log(response.data);
+};
 
 
 
@@ -189,6 +199,8 @@ useEffect(() => {
   fetchCheckIns();
   fetchCheckOuts();
   fetchEventBookings();
+  fetchDashboardStats();
+  fetchRooms();
 
   
 
@@ -196,7 +208,7 @@ useEffect(() => {
     fetchBookings();
     fetchCheckIns();
     fetchCheckOuts();
-  }, 3000); // every 3 sec
+  }, 30000); // every 30 sec
 
   return () => clearInterval(interval);
 }, []);
@@ -216,7 +228,6 @@ const replyToCustomer = async (
 
 const data = response.data;
 
-    // alert(data.message);
 
     fetchEnquiries();
   } catch (error) {
@@ -228,7 +239,6 @@ const data = response.data;
 const fetchEnquiries = async () => {
   try {
     const response = await API.get("/api/contact/enquiries/");
-    console.log("ENQUIRIES:", response.data);
     setEnquiries(response.data);
   } catch (error) {
     console.error(error);
@@ -240,11 +250,11 @@ const fetchEnquiries = async () => {
 
 
 
+
+
 const fetchCheckOuts = async () => {
   try {
-    const res = await axios.get(
-      "http://127.0.0.1:8000/api/bookings/check-out/"
-    );
+    const res = await API.get("/api/bookings/check-out/");
 
     setCheckOuts(res.data);
   } catch (error) {
@@ -254,9 +264,6 @@ const fetchCheckOuts = async () => {
 
 const handleCheckOut = async (id: number) => {
   try {
-    // await axios.patch(
-    //   `http://127.0.0.1:8000/api/bookings/checkout/${id}/`
-    // );
     await API.patch(`/api/bookings/checkout/${id}/`);
 
     localStorage.setItem(
@@ -317,12 +324,36 @@ const filteredBookings = bookings.filter((booking) => {
 
       {active === "dashboard" && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <StatCard label="Today's Check-Ins" value={8} />
-          <StatCard label="Today's Check-Outs" value={5} />
-          <StatCard label="Occupied Rooms" value={18} />
-          <StatCard label="Available Rooms" value={12} />
-          <StatCard label="Active Bookings" value={4} />
-          <StatCard label="Restaurant Reservations" value={9} />
+         <StatCard
+  label="Today's Check-Ins"
+  value={checkIns.length}
+/>
+
+<StatCard
+  label="Today's Check-Outs"
+  value={checkOuts.length}
+/>
+
+<StatCard
+  label="Occupied Rooms"
+  value={dashboardStats.occupied_rooms}
+/>
+
+<StatCard
+  label="Available Rooms"
+  value={dashboardStats.available_rooms}
+/>
+
+<StatCard
+  label="Active Bookings"
+  value={
+    bookings.filter(
+      (b) => b.status === "booked"
+    ).length
+  }
+/>
+
+
         </div>
       )}
 
@@ -675,63 +706,27 @@ const filteredBookings = bookings.filter((booking) => {
   />
 )}
       {/* Available Rooms */}
-
-      {/* {active === "available-rooms" && (
-        <DataTable
-          columns={[
-            "Room Number",
-            "Type",
-            "Price",
-            "Status",
-          ]}
-          rows={[
-            [
-              "101",
-              "Deluxe",
-              "₹2499",
-              "Available",
-            ],
-            [
-              "102",
-              "Premium",
-              "₹3499",
-              "Occupied",
-            ],
-            [
-              "201",
-              "Suite",
-              "₹5499",
-              "Cleaning",
-            ],
-            [
-              "305",
-              "Executive",
-              "₹4299",
-              "Reserved",
-            ],
-          ]}
-        />
-      )} */}
       {active === "available-rooms" && (
   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-    {roomCategories.map((room) => (
+    {rooms.map((room) => (
       <div
         key={room.id}
         className="bg-white rounded-xl shadow overflow-hidden"
       >
         <img
-          src={room.image}
-          alt={room.name}
-          className="w-full h-52 object-cover"
-        />
+  src={room.image_url}
+  alt={room.title}
+  className="w-full h-52 object-cover"
+/>
 
         <div className="p-4">
-          <h2 className="text-xl font-bold">
-            {room.name}
-          </h2>
+          
+<h2 className="text-xl font-bold">
+  {room.title}
+</h2>
 
           <p className="text-gray-500 mt-1">
-            Total Rooms: {room.totalRooms}
+            Total Rooms: {room.total_rooms}
           </p>
 
           <p className="font-semibold mt-2">
@@ -740,13 +735,13 @@ const filteredBookings = bookings.filter((booking) => {
 
           <div className="flex gap-2 mt-4">
             <button className="bg-green-600 text-white px-3 py-2 rounded-lg">
-              Available ({room.availableRooms})
+              Available ({room.available_rooms})
             </button>
 
             <button className="bg-red-600 text-white px-3 py-2 rounded-lg">
               Occupied (
-              {room.totalRooms -
-                room.availableRooms}
+              {room.total_rooms -
+                room.available_rooms}
               )
             </button>
           </div>

@@ -1,4 +1,3 @@
-
 import hotelExterior from "@/assets/hotel-exterior.jpg";
 
 import {
@@ -37,9 +36,8 @@ function LoginPage() {
 }
 
 function Inner() {
-  const { login, user} = useAuth();
+  const { login, user, updateUser } = useAuth();
   const navigate = useNavigate();
-  const { updateUser } = useAuth();
 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -280,3 +278,4 @@ function Inner() {
     
   </section>
 );}
+

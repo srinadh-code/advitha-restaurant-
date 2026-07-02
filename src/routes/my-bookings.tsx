@@ -1,15 +1,3 @@
-// import { createFileRoute } from '@tanstack/react-router'
-
-// export const Route = createFileRoute('/my-bookings')({
-//   component: RouteComponent,
-// })
-
-// function RouteComponent() {
-//   return <div>Hello "/my-bookings"!</div>
-// }
-
-
-
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";

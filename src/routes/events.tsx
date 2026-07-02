@@ -36,23 +36,28 @@ useEffect(() => {
 
 const fetchCategories = async () => {
   try {
-    const response = await fetch(
-      "http://127.0.0.1:8000/api/events/categories/"
-    );
-
-    const data = await response.json();
-
-    console.log("EVENT DATA:", data);
-
-    setCategories(data);
-  } catch (error) {
-    console.error("Category load failed", error);
+    const response = await API.get("/api/events/categories/");
+    setCategories(response.data);
+  } catch {
+    setErrorMessage("Failed to load event categories.");
+    setShowErrorModal(true);
   }
 };
 const handleSubmit = async (
   e: React.FormEvent
 ) => {
   e.preventDefault();
+  if (
+    !formData.name.trim() ||
+    !formData.phone.trim() ||
+    !formData.event_date ||
+    !formData.guests ||
+    !formData.category
+  ) {
+    setErrorMessage("Please fill in all required fields.");
+    setShowErrorModal(true);
+    return;
+  }
 
   try {
     setLoading(true);
@@ -80,9 +85,7 @@ setShowSuccessModal(true);
 
 
 
-  }  catch (error: any) {
-  console.log("FULL ERROR:", error.response?.data);
-
+  } catch (error: any) {
   if (error.response?.status === 401) {
     setErrorMessage("Please login first for booking.");
   } else {
@@ -96,23 +99,12 @@ setShowSuccessModal(true);
   }
 
   setShowErrorModal(true);
+
+} finally {
+  setLoading(false);
 }
 };
-  const packages = [
-    { name: "Basic", price: "₹5,000" },
-    { name: "Silver", price: "₹15,000" },
-    { name: "Gold", price: "₹30,000" },
-    { name: "Premium", price: "₹50,000" },
-  ];
-
-  const eventTypes = [
-    "Birthday Party",
-    "Engagement",
-    "Anniversary",
-    "Baby Shower",
-    "Corporate Meeting",
-  ];
-
+  
   return (
   <>
     <SiteLayout>
@@ -431,45 +423,83 @@ setShowSuccessModal(true);
         </h2>
 
         <button
-          onClick={() =>
-            setShowBookingDrawer(false)
-          }
-          className="text-2xl"
-        >
-          ✕
-        </button>
+  onClick={() =>
+    setShowBookingDrawer(false)
+  }
+  aria-label="Close booking drawer"
+  className="text-2xl"
+>
+  ✕
+</button>
       </div>
 
       <form
         onSubmit={handleSubmit}
         className="mt-8 space-y-4"
       >
+        
+
         <input
-          type="text"
-          placeholder="Name"
-          className="w-full rounded-lg border p-3"
-        />
+  type="text"
+  placeholder="Name"
+  required
+  value={formData.name}
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      name: e.target.value,
+    })
+  }
+  className="w-full rounded-lg border p-3"
+/>
 
         <input
           type="text"
           placeholder="Phone"
+          required
+          value={formData.phone}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              phone: e.target.value,
+            })
+          }
           className="w-full rounded-lg border p-3"
         />
 
         <input
-          type="date"
-          className="w-full rounded-lg border p-3"
-        />
+  type="date"
+  required
+  value={formData.event_date}
+  onChange={(e) =>
+    setFormData({
+      ...formData,
+      event_date: e.target.value,
+    })
+  }
+  className="w-full rounded-lg border p-3"
+/>
 
         <input
           type="number"
           placeholder="Guests"
+          required
+          value={formData.guests}
+          onChange={(e) =>
+  setFormData({
+    ...formData,
+    guests: e.target.value,
+  })
+}
           className="w-full rounded-lg border p-3"
         />
 
-        <button className="w-full rounded-xl bg-yellow-500 py-3 text-white">
-          Confirm Booking
-        </button>
+        <button
+  type="submit"
+  className="w-full rounded-xl bg-yellow-500 py-3 text-white"
+>
+  Confirm Booking
+</button>
       </form>
     </div>
   </div>
@@ -485,10 +515,11 @@ setShowSuccessModal(true);
         </h2>
 
         <p className="mt-4 text-gray-600">
-          Your event booking was successful.
-          Please contact our receptionist for payment
-          and package details.we mentioned number in the website ContactPage.
-        </p>
+  Your event booking was successful.
+  Please contact our receptionist for payment
+  and package details. Contact details are available
+  on our Contact page.
+</p>
 
         <div className="mt-5 rounded-xl bg-yellow-50 p-4">
           <p className="font-semibold">
@@ -501,15 +532,15 @@ setShowSuccessModal(true);
         </div>
 
         <button
-          onClick={() => setShowSuccessModal(false)}
-          className="mt-6 rounded-xl bg-yellow-500 px-6 py-3 text-white font-semibold hover:bg-yellow-600"
-        >
-          ok
-        </button>
+  onClick={() => setShowSuccessModal(false)}
+  className="mt-6 rounded-xl bg-yellow-500 px-6 py-3 text-white font-semibold hover:bg-yellow-600"
+>
+  OK
+</button>
       </div>
     </div>
   </div>
  )}
-  </>
+ </>
 );
 }
