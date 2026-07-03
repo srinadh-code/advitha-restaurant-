@@ -1,9 +1,5 @@
-
-
-
-
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { SectionHeading } from "@/components/SectionHeading";
@@ -120,9 +116,10 @@ function GalleryPage() {
         ) : (
           <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
             {filteredImages.map((img, i) => (
-              <motion.button
-                key={img.id}
-                onClick={() => setOpen(img.image_url)}
+             <motion.button
+  key={img.id}
+  onClick={() => setOpen(img.image_url)}
+  aria-label={`View full size: ${img.title}`}
                 initial={{
                   opacity: 0,
                   y: 30,
@@ -174,21 +171,20 @@ function GalleryPage() {
       {/* FULL SCREEN VIEWER */}
       <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-            }}
+         <motion.div
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 0 }}
+  role="dialog"
+  aria-modal="true"
+  aria-label="Gallery image viewer"
+
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
             onClick={() => setOpen(null)}
           >
             <button
-              onClick={() => setOpen(null)}
+  onClick={() => setOpen(null)}
+  aria-label="Close gallery viewer"
               className="absolute right-6 top-6 text-white hover:text-gold"
             >
               <X size={34} />

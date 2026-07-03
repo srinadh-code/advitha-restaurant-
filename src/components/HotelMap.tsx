@@ -1,21 +1,21 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-
+import markerIcon from "@/assets/marker-icon.png";
+import markerIcon2x from "@/assets/marker-icon-2x.png";
+import markerShadow from "@/assets/marker-shadow.png";
 const hotelIcon = new L.Icon({
-  iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-  shadowUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
 
 const touristIcon = new L.Icon({
-  iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
-  shadowUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
@@ -26,7 +26,10 @@ export default function HotelMap() {
     79.9405633,
   ];
 
-  const touristPlaces = [
+ const touristPlaces: {
+  name: string;
+  position: [number, number];
+}[] = [
     {
       name: "Ramappa Temple",
       position: [18.2591, 79.9436],
@@ -45,7 +48,11 @@ export default function HotelMap() {
     },
   ];
 
-  return (
+return (
+  <div
+    aria-label="Map showing hotel location and nearby tourist attractions"
+    title="Hotel location map"
+  >
     <MapContainer
       center={hotelPosition}
       zoom={10}
@@ -70,39 +77,21 @@ export default function HotelMap() {
 
       {/* Tourist Markers */}
       {touristPlaces.map((place, index) => (
-        <Marker
-          key={index}
-          position={place.position as [number, number]}
-          icon={touristIcon}
-        >
-          {/* <Popup>
-            <strong>{place.name}</strong>
-            <br />
-            Tourist Attraction
-          </Popup> */}
-          {/* <Popup>
-   <div>
-     <h3>Ramappa Temple</h3>
-     <a
-       href="https://maps.google.com/?q=18.2591,79.9436"
-       target="_blank"
-     >
-       Get Directions
-     </a>
-   </div> */}
-{/* </Popup>  */}
-<Popup>
-       <div>
-     <h3>{place.name}</h3>
-     <a
-      href={`/tourism?place=${encodeURIComponent(place.name)}`}
-    >
-      Click to Explore
-    </a>
-   </div>
-</Popup>
-        </Marker>
-      ))}
+  <Marker
+    key={index}
+    position={place.position}
+    icon={touristIcon}
+  >
+    <Popup>
+      <div>
+        <h3>{place.name}</h3>
+        <a href={`/tourism?place=${encodeURIComponent(place.name)}`}>
+          Click to Explore
+        </a>
+      </div>
+    </Popup>
+  </Marker>
+))}
     </MapContainer>
-  );
-}
+  </div>
+)};

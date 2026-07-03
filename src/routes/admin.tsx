@@ -2,24 +2,81 @@ import API from "@/api/api";
 import { toast } from "sonner";
 import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { LayoutDashboard, CalendarCheck, Bed, UtensilsCrossed, Map, Image, Users, Star, UserCog, Receipt, BarChart3, Settings } from "lucide-react";
+
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { DashboardShell, StatCard, DataTable, type SidebarItem } from "@/components/DashboardShell";
 import { ROOMS, REVIEWS } from "@/lib/mockData";
 import { Toaster } from "@/components/ui/sonner";
-
-
 import {
+  LayoutDashboard,
+  CalendarCheck,
+  Bed,
+  UtensilsCrossed,
+  Map,
+  Image,
+  Users,
+  Star,
+  UserCog,
+  Receipt,
+  BarChart3,
+  Settings,
   Building2,
   BedDouble,
- 
   Hotel,
-  
-
   Headset,
   PartyPopper,
   Percent,
 } from "lucide-react";
+
+
+interface DashboardData {
+  total_rooms: number;
+  available_rooms: number;
+  total_bookings: number;
+  occupied_rooms: number;
+  total_event_bookings: number;
+  total_customers: number;
+  total_staff: number;
+  total_receptionists: number;
+  restaurant_reservations: number;
+  occupancy_rate: number;
+  recent_bookings: {
+    guest: string;
+    room: string;
+    check_in: string;
+    status: string;
+  }[];
+  recent_event_bookings: {
+    name: string;
+    event_type: string;
+    event_date: string;
+    guests: number;
+  }[];
+}
+
+interface Booking {
+  id: number;
+  full_name: string;
+  email: string;
+  phone: string;
+  room?: number;
+  room_name?: string;
+  check_in: string;
+  check_out: string;
+  guests: number;
+}
+interface Room {
+  id?: number;
+  title: string;
+  price: string | number;
+  room_type: string;
+  description: string;
+  adults: number;
+  children: number;
+  features: string[];
+  image_url?: string;
+}
+
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -78,11 +135,8 @@ function AdminInner() {
       {active === "gallery" && <GalleryView />}
       {active === "customers" && <CustomersView />}
       {active === "reviews" && <ReviewsView />}
-      {active === "hotals  && reviews system in admin"}
-      {active === "hotals in mulugu and serives "}
-      {}
       {active === "staff" && <StaffView />}
-      {/* {active === "receptionists" && <Placeholder title="Manage Receptionists" desc="Manage receptionist accounts and permissions." />} */}
+     
       {active === "receptionists" && <ReceptionistsView />}
       {active === "reports" && <ReportsView />}
       {active === "settings" && <Placeholder title="System Settings" desc="Property settings, taxes, payment options and content." />}
@@ -91,17 +145,17 @@ function AdminInner() {
 }
 
 function DashboardView() {
-  const [dashboard, setDashboard] = useState<any>(null);
+  const [dashboard, setDashboard] =
+  useState<DashboardData | null>(null);
 
   const fetchDashboard = async () => {
-    try {
-      const res = await API.get("/api/dashboard/");
-      console.log(res.data);
-      setDashboard(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  try {
+    const res = await API.get("/api/dashboard/");
+    setDashboard(res.data);
+  } catch {
+    toast.error("Failed to load dashboard");
+  }
+};
 
   useEffect(() => {
     fetchDashboard();
@@ -231,31 +285,23 @@ function DashboardView() {
   
   
 function BookingsView() {
-  const [bookings, setBookings] = useState<any[]>([]);
+  const [bookings, setBookings] =
+  useState<Booking[]>([]);
 
-  
+useEffect(() => {
+  const fetchBookings = async () => {
+    try {
+      const response = await API.get("/api/bookings/");
+      setBookings(response.data);
+    } catch (error) {
+      console.error("Failed to fetch bookings:", error);
+    }
+  };
 
-  useEffect(() => {
-  const token = localStorage.getItem("access");
-
-  fetch("http://127.0.0.1:8000/api/bookings/", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error("Failed to fetch bookings");
-      }
-      return res.json();
-    })
-    .then((data) => {
-      setBookings(data);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  fetchBookings();
 }, []);
+
+
 
   return (
     <div className="space-y-6">
@@ -291,8 +337,7 @@ function BookingsView() {
 
           <tbody>
 
-            {bookings.map((booking: any) => (
-
+            {bookings.map((booking) => (
               <tr
                 key={booking.id}
                 className="border-b hover:bg-gray-50"
@@ -344,377 +389,14 @@ function BookingsView() {
   );
 }
 
-// function RoomsView() {
-//   const [rooms, setRooms] = useState<any[]>([]);
-//   const [image, setImage] = useState<File | null>(null);
-//   const [selectedRoom, setSelectedRoom] = useState<any>(null);
-//   const [showEditModal, setShowEditModal] = useState(false);
-//   useEffect(() => {
-//     fetchRooms();
-//   }, []);
-
-//   const fetchRooms = async () => {
-//     try {
-//       const response = await API.get("/api/rooms/");
-//       setRooms(response.data);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-// const handleEdit = (room: any) => {
-//   setSelectedRoom(room);
-//   setShowEditModal(true);
-// };
-
-
-//   const handleDelete = async (id: number) => {
-//     try {
-//       await API.delete(`/api/rooms/${id}/`);
-//       fetchRooms();
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-
-
-
-
-// const updateRoom = async () => {
-//   try {
-//     const data = new FormData();
-
-//     data.append(
-//       "title",
-//       selectedRoom.title
-//     );
-
-//     data.append(
-//       "price",
-//       selectedRoom.price
-//     );
-
-//     if (image) {
-//       data.append(
-//         "image",
-//         image
-//       );
-//     }
-
-//     await API.patch(
-//       `/api/rooms/${selectedRoom.id}/`,
-//       data
-//     );
-
-//     fetchRooms();
-
-//     setShowEditModal(false);
-
-//     toast.success(
-//       "Room updated successfully"
-//     );
-
-//   } catch (error) {
-//     console.log(error);
-
-//     toast.error(
-//       "Failed to update room"
-//     );
-//   }
-// };
-// const addRoom = async () => {
-//   try {
-//     const data = new FormData();
-
-//     data.append("title", selectedRoom.title);
-//     data.append("price", selectedRoom.price);
-//     data.append("room_type", selectedRoom.room_type);
-//     data.append("adults", selectedRoom.adults);
-//     data.append("children", selectedRoom.children);
-//     data.append("description", selectedRoom.description);
-// data.append("feature1", selectedRoom.feature1);
-// data.append("feature2", selectedRoom.feature2);
-// data.append("feature3", selectedRoom.feature3);
-// data.append("feature4", selectedRoom.feature4);
-
-//     if (image) {
-//       data.append("image", image);
-//     }
-
-//   await API.post("/api/rooms/", data);
-
-//     fetchRooms();
-
-//     setShowEditModal(false);
-
-//     toast.success("Room added successfully");
-
-//   } catch (error) {
-//     console.log(error);
-
-//     toast.error("Failed to add room");
-//   }
-// };
-// return (
-//   <>
-//   <div className="mb-6 flex justify-end">
-//       <button
-//         onClick={() => {
-//           setSelectedRoom({
-//   title: "",
-//   room_type: "",
-//   description: "",
-//   price: "",
-//   adults: 1,
-//   children: 0,
-//   feature1: "",
-//   feature2: "",
-//   feature3: "",
-//   feature4: "",
-// });
-
-//           setImage(null);
-//           setShowEditModal(true);
-//         }}
-//         className="rounded-lg bg-yellow-500 px-5 py-2 text-white font-semibold"
-//       >
-//         + Add Room
-//       </button>
-//     </div>
-//     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-//       {rooms.map((room) => (
-//         <div
-//           key={room.id}
-//           className="overflow-hidden rounded-2xl bg-card border border-border shadow-soft"
-//         >
-//           <div className="h-52 overflow-hidden">
-//             <img
-//               src={room.image_url}
-//               alt={room.title}
-//               className="h-full w-full object-cover"
-//             />
-//           </div>
-
-//           <div className="p-5">
-//             <div className="flex items-center justify-between">
-//               <h3 className="font-display text-xl font-bold">
-//                 {room.title}
-//               </h3>
-
-//               <span className="text-xl font-bold text-gold">
-//                 ₹{room.price}
-//               </span>
-//             </div>
-
-//             <p className="mt-2 text-sm text-muted-foreground">
-//               {room.room_type}
-//             </p>
-
-//             <p className="mt-2 text-sm">
-//               Adults: {room.adults} | Children: {room.children}
-//             </p>
-
-//             <div className="mt-4 flex gap-3">
-//               <button
-//                 onClick={() => handleEdit(room)}
-//                 className="flex-1 rounded-lg border border-gold px-4 py-2"
-//               >
-//                 Edit
-//               </button>
-
-//               <button
-//                 onClick={() => handleDelete(room.id)}
-//                 className="flex-1 rounded-lg bg-red-600 px-4 py-2 text-white"
-//               >
-//                 Delete
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       ))}
-//     </div>
-
-//     {showEditModal && selectedRoom && (
-//       // <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-//       //   <div className="bg-white w-[600px] rounded-2xl p-6">
-//       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-//   <div className="bg-white w-full max-w-2xl rounded-2xl p-6 max-h-[90vh] overflow-y-auto">
-//           <h2 className="text-2xl font-bold mb-4">
-//   {selectedRoom?.id ? "Edit Room" : "Add Room"}
-// </h2>
-
-//           <input
-//             type="text"
-//             value={selectedRoom.title}
-//             onChange={(e) =>
-//               setSelectedRoom({
-//                 ...selectedRoom,
-//                 title: e.target.value,
-//               })
-//             }
-//             placeholder="Room Title"
-//             className="w-full border p-3 mb-3 rounded"
-//           />
-
-
-// <input
-//   type="number"
-//   value={selectedRoom.price}
-//   onChange={(e) =>
-//     setSelectedRoom({
-//       ...selectedRoom,
-//       price: e.target.value,
-//     })
-//   }
-//   placeholder="Price"
-//   className="w-full border p-3 mb-3 rounded"
-// />
-
-
-
-// <select
-//   value={selectedRoom.room_type}
-//   onChange={(e) =>
-//     setSelectedRoom({
-//       ...selectedRoom,
-//       room_type: e.target.value,
-//     })
-//   }
-//   className="w-full border p-3 mb-3 rounded"
-// >
-//   <option value="">Select Room Type</option>
-//   <option value="DELUXE">Deluxe</option>
-//   <option value="PREMIUM">Premium</option>
-//   <option value="SUITE">Suite</option>
-//   <option value="EXECUTIVE">Executive</option>
-// </select>
-
-// <textarea
-//   value={selectedRoom.description}
-//   onChange={(e) =>
-//     setSelectedRoom({
-//       ...selectedRoom,
-//       description: e.target.value,
-//     })
-//   }
-//   placeholder="Description"
-//   className="w-full border p-3 mb-3 rounded"
-// />
-
-// <input
-//   type="number"
-//   value={selectedRoom.adults}
-//   onChange={(e) =>
-//     setSelectedRoom({
-//       ...selectedRoom,
-//       adults: e.target.value,
-//     })
-//   }
-//   placeholder="Adults"
-//   className="w-full border p-3 mb-3 rounded"
-// />
-
-// <input
-//   type="number"
-//   value={selectedRoom.children}
-//   onChange={(e) =>
-//     setSelectedRoom({
-//       ...selectedRoom,
-//       children: e.target.value,
-//     })
-//   }
-//   placeholder="Children"
-//   className="w-full border p-3 mb-3 rounded"
-// />
-
-// <input
-//   value={selectedRoom.feature1}
-//   onChange={(e) =>
-//     setSelectedRoom({
-//       ...selectedRoom,
-//       feature1: e.target.value,
-//     })
-//   }
-//   placeholder="Feature 1"
-//   className="w-full border p-3 mb-3 rounded"
-// />
-
-// <input
-//   value={selectedRoom.feature2}
-//   onChange={(e) =>
-//     setSelectedRoom({
-//       ...selectedRoom,
-//       feature2: e.target.value,
-//     })
-//   }
-//   placeholder="Feature 2"
-//   className="w-full border p-3 mb-3 rounded"
-// />
-
-// <input
-//   value={selectedRoom.feature3}
-//   onChange={(e) =>
-//     setSelectedRoom({
-//       ...selectedRoom,
-//       feature3: e.target.value,
-//     })
-//   }
-//   placeholder="Feature 3"
-//   className="w-full border p-3 mb-3 rounded"
-// />
-
-// <input
-//   value={selectedRoom.feature4}
-//   onChange={(e) =>
-//     setSelectedRoom({
-//       ...selectedRoom,
-//       feature4: e.target.value,
-//     })
-//   }
-//   placeholder="Feature 4"
-//   className="w-full border p-3 mb-3 rounded"
-// />
-
-
-// <input
-//   type="file"
-//   className="w-full border p-3 mb-4 rounded"
-//   onChange={(e) =>
-//     setImage(e.target.files?.[0] || null)
-//   }
-// />
-//           <div className="flex gap-3">
-//             <button
-//               onClick={() => setShowEditModal(false)}
-//               className="flex-1 bg-gray-300 py-3 rounded"
-//             >
-//               Cancel
-//             </button>
-
-// <button
-//   onClick={
-//     selectedRoom?.id
-//       ? updateRoom
-//       : addRoom
-//   }
-//   className="flex-1 bg-yellow-500 text-white py-3 rounded"
-// >
-//   Save
-// </button>
-//           </div>
-//         </div>
-//       </div>
-//     )}
-//   </>
-// );
-// }
-
 
 
 
 function RoomsView() {
-  const [rooms, setRooms] = useState<any[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [image, setImage] = useState<File | null>(null);
-  const [selectedRoom, setSelectedRoom] = useState<any>(null);
+  const [selectedRoom, setSelectedRoom] =
+  useState<Room | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
   useEffect(() => {
     fetchRooms();
@@ -748,20 +430,24 @@ const handleEdit = (room: any) => {
   };
 
 const updateRoom = async () => {
+  if (!selectedRoom) {
+    toast.error("No room selected");
+    return;
+  }
+
   try {
     const data = new FormData();
 
     data.append("title", selectedRoom.title);
-    data.append("price", selectedRoom.price);
+    data.append("price", String(selectedRoom.price));
     data.append("room_type", selectedRoom.room_type);
     data.append("description", selectedRoom.description);
-    data.append("adults", selectedRoom.adults);
-    data.append("children", selectedRoom.children);
+    data.append("adults", String(selectedRoom.adults));
+    data.append("children", String(selectedRoom.children));
     data.append(
       "features",
       JSON.stringify(selectedRoom.features)
     );
-
     if (image) {
       data.append("image", image);
     }
@@ -776,21 +462,29 @@ const updateRoom = async () => {
 
     toast.success("Room updated successfully");
   } catch (error) {
-    console.log(error);
+    
     toast.error("Failed to update room");
   }
 };
 const addRoom = async () => {
+  if (!selectedRoom) {
+    toast.error("No room selected");
+    return;
+  }
+
   try {
     const data = new FormData();
 
     data.append("title", selectedRoom.title);
-    data.append("price", selectedRoom.price);
+    data.append("price", String(selectedRoom.price));
     data.append("room_type", selectedRoom.room_type);
-    data.append("adults", selectedRoom.adults);
-    data.append("children", selectedRoom.children);
     data.append("description", selectedRoom.description);
-    data.append("features", JSON.stringify(selectedRoom.features));
+    data.append("adults", String(selectedRoom.adults));
+    data.append("children", String(selectedRoom.children));
+    data.append(
+      "features",
+      JSON.stringify(selectedRoom.features)
+    );
 
     if (image) {
       data.append("image", image);
@@ -805,7 +499,7 @@ const addRoom = async () => {
     toast.success("Room added successfully");
 
   } catch (error) {
-    console.log(error);
+   
 
     toast.error("Failed to add room");
   }
@@ -875,7 +569,7 @@ return (
               </button>
 
               <button
-                onClick={() => handleDelete(room.id)}
+                onClick={() => handleDelete(room.id!)}
                 className="flex-1 rounded-lg bg-red-600 px-4 py-2 text-white"
               >
                 Delete
@@ -956,9 +650,9 @@ return (
   value={selectedRoom.adults}
   onChange={(e) =>
     setSelectedRoom({
-      ...selectedRoom,
-      adults: e.target.value,
-    })
+  ...selectedRoom,
+  adults: Number(e.target.value),
+})
   }
   placeholder="Adults"
   className="w-full border p-3 mb-3 rounded"
@@ -969,9 +663,9 @@ return (
   value={selectedRoom.children}
   onChange={(e) =>
     setSelectedRoom({
-      ...selectedRoom,
-      children: e.target.value,
-    })
+  ...selectedRoom,
+  children: Number(e.target.value),
+})
   }
   placeholder="Children"
   className="w-full border p-3 mb-3 rounded"
@@ -1055,7 +749,7 @@ function RestaurantView() {
     const response = await API.get("/api/food/categories/");
     setCategories(response.data);
   } catch (error) {
-    console.log(error);
+    toast.error("Failed to load categories");
   }
 };
 
@@ -1098,7 +792,7 @@ const addFood = async () => {
     fetchFoods();
 
   } catch (error) {
-    console.log(error);
+  
     toast.error("Failed");
   }
 };
@@ -2713,104 +2407,49 @@ function StaffView() {
   };
 
   const fetchStaff = async () => {
-    try {
-      const token = localStorage.getItem("access");
+  try {
+    const res = await API.get("/staff/");
+    setStaff(res.data);
+  } catch (error) {
+    toast.error("Failed to load food categories");
+  }
+};
 
-      const res = await API.get(
-        "/staff/",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+const createStaff = async () => {
+  if (!validate()) return;
 
-      setStaff(res.data);
+  try {
+    await API.post("/staff/", form);
 
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
+    toast.success("Staff created successfully");
     fetchStaff();
-  }, []);
+    setShowForm(false);
 
-  const createStaff = async () => {
+    setForm({
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone_number: "",
+      salary: "",
+      password: "",
+    });
+  } catch (error: any) {
+    
+    toast.error("Failed to create staff");
+  }
+};
 
-    if (!validate()) {
-      return;
-    }
+const deleteStaff = async (id: number) => {
+  try {
+    await API.delete(`/staff/${id}/`);
 
-    try {
-      const token = localStorage.getItem("access");
-
-      await API.post(
-        "/staff/",
-        form,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      toast.success(
-        "Staff created successfully"
-      );
-
-      fetchStaff();
-
-      setShowForm(false);
-
-      setForm({
-        first_name: "",
-        last_name: "",
-        email: "",
-        phone_number: "",
-        salary: "",
-        password: "",
-      });
-
-    } catch (error: any) {
-      console.log(error.response?.data);
-
-      toast.error(
-        "Failed to create staff"
-      );
-    }
-  };
-
-  const deleteStaff = async (id: number) => {
-
-    try {
-      const token = localStorage.getItem("access");
-
-      await API.delete(
-        `/staff/${id}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("Token:", localStorage.getItem("access"));
-
-      toast.success(
-        "Staff deleted successfully"
-      );
-
-      fetchStaff();
-
-    } catch (error) {
-
-      console.log(error);
-
-      toast.error(
-        "Failed to delete staff"
-      );
-    }
-  };
+    toast.success("Staff deleted successfully");
+    fetchStaff();
+  } catch (error) {
+   
+    toast.error("Failed to delete staff");
+  }
+};
 const totalSalary = staff.reduce(
   (sum, item) => sum + Number(item.salary || 0),
   0
@@ -3144,7 +2783,7 @@ const fetchReceptionists = async () => {
 
     setReceptionists(res.data);
   } catch (error) {
-    console.log(error);
+     toast.error("Failed to load receptionists");
   }
  };
  useEffect(() => {
@@ -3188,11 +2827,18 @@ const createReceptionist = async () => {
 
   } 
 catch (error: any) {
-  console.log("ERROR:", error.response?.data);
+  
 
-  toast.error(
-    JSON.stringify(error.response?.data)
-  );
+  const errorData = error?.response?.data;
+
+  const message =
+    errorData?.message ||
+    errorData?.error ||
+    errorData?.email?.[0] ||
+    errorData?.phone_number?.[0] ||
+    "Failed to create receptionist";
+
+  toast.error(message);
 }
 };
 const deleteReceptionist = async (id: number) => {
@@ -3214,7 +2860,7 @@ const deleteReceptionist = async (id: number) => {
 
     fetchReceptionists();
   } catch (error) {
-    console.log(error);
+
     toast.error(
       "Failed to delete receptionist"
     );
@@ -3398,10 +3044,9 @@ const totalReceptionistSalary = receptionists.reduce(
 
 {receptionists.length > 0 ? (
   
-  // <div className="mt-8 overflow-hidden rounded-xl border">
-  //   <div className="mt-8 mb-4 rounded-xl border bg-card p-4">
+
   <div className="mt-4 overflow-hidden rounded-xl border">
-  {/* <div className="mb-4 rounded-xl border bg-card p-4"> */}
+
   <div className="rounded-xl border bg-card p-4">
   <div className="flex justify-between items-center">
 

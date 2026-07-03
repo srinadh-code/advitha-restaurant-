@@ -1,5 +1,8 @@
 import hotelExterior from "@/assets/hotel-exterior.jpg";
-
+import {
+  GoogleLogin,
+  CredentialResponse,
+} from "@react-oauth/google";
 import {
   createFileRoute,
   Link,
@@ -8,7 +11,7 @@ import {
 } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { GoogleLogin } from "@react-oauth/google";
+
 
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { useAuth } from "@/lib/auth";
@@ -54,7 +57,7 @@ function Inner() {
 
     return <Navigate to="/" />;
   }
-  // const { login } = useAuth();
+  
 
 
   const submit = async (e: React.FormEvent) => {
@@ -85,8 +88,8 @@ function Inner() {
 };
 
   const handleGoogleLogin = async (
-    credentialResponse: any
-  ) => {
+  credentialResponse: CredentialResponse
+) => {
     try {
       const response = await API.post(
         "/api/accounts/google-login/",
@@ -177,25 +180,36 @@ function Inner() {
               onSubmit={submit}
               className="mt-8 space-y-4"
             >
-              <input
-                type="email"
-                placeholder="Email Address"
-                value={email}
-                onChange={(e) =>
-                  setEmail(e.target.value)
-                }
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-gold"
-              />
+              <label
+  htmlFor="email"
+  className="mb-2 block text-sm font-medium text-foreground"
+>
+  Email Address
+</label>
 
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) =>
-                  setPassword(e.target.value)
-                }
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-gold"
-              />
+<input
+  id="email"
+  type="email"
+  placeholder="Email Address"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-gold"
+/>
+<label
+  htmlFor="password"
+  className="mb-2 block text-sm font-medium text-foreground"
+>
+  Password
+</label>
+
+<input
+  id="password"
+  type="password"
+  placeholder="Password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-gold"
+/>
 
               <button
                 type="submit"

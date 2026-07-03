@@ -1,8 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+} from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Bed, UtensilsCrossed, Wifi, Car, ConciergeBell, PartyPopper, Star, ArrowRight, MapPin } from "lucide-react";
-// import hotelExterior from "@/assets/hotel-exterior.jpg";
+
 import hotelExterior from "@/assets/advitha.png";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { SectionHeading } from "@/components/SectionHeading";
@@ -21,9 +23,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  Bed, UtensilsCrossed, Wifi, Car, ConciergeBell, PartyPopper,
-};
+
 interface Food {
   id: number;
   name: string;
@@ -61,11 +61,7 @@ function Index() {
   const [featuredTourism, setFeaturedTourism] =
   useState<TourismPlace[]>([]);
 
-useEffect(() => {
-  fetchFoods();
-  fetchRooms();
-  fetchTourismPlaces();
-}, []);
+
 
 
 const fetchFoods = async () => {
@@ -153,6 +149,16 @@ const fetchTourismPlaces = async () => {
     );
   }
 };
+
+useEffect(() => {
+  fetchFoods();
+  fetchRooms();
+  fetchTourismPlaces();
+}, []);
+
+
+
+
   return (
     <SiteLayout>
       {/* HERO */}
@@ -171,10 +177,7 @@ const fetchTourismPlaces = async () => {
             className="mt-4 font-display text-3xl md:text-5xl font-medium leading-tight max-w-4xl">
             Where Luxury Meets <span className="text-gradient-silver">Telangana Hospitality</span>
           </motion.h1>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
-            className="mt-5 max-w-2xl text-base md:text-lg text-white/85">
-            
-          </motion.p>
+          
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
             className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link to="/book" className="rounded-md gradient-gold px-6 py-3 text-sm font-semibold text-gold-foreground shadow-luxury hover:opacity-90">
@@ -201,7 +204,7 @@ const fetchTourismPlaces = async () => {
             <motion.div key={f.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.06 }}
               className="group flex gap-4 overflow-hidden rounded-2xl bg-card border border-border p-3 shadow-soft hover:shadow-luxury transition">
-              {/* <img src={f.image_url} alt={f.name} className="h-24 w-28 flex-none rounded-xl object-cover" /> */}
+             
               <motion.img
   src={f.image_url}
   alt={f.name}
@@ -237,12 +240,6 @@ const fetchTourismPlaces = async () => {
           </Link>
         </div>
       </section>
-
-
-
-      
-       
-
       {/* FEATURED ROOMS */}
       <section className="bg-secondary/50 py-20">
         <div className="container mx-auto px-4">
@@ -328,10 +325,6 @@ const fetchTourismPlaces = async () => {
           </div>
         </div>
       </section>
-
-
-
-
       {/* Services Section */}
 <section className="bg-gold-soft/40 py-14">
   <div className="container mx-auto px-4">
@@ -350,56 +343,7 @@ const fetchTourismPlaces = async () => {
       </p>
     </div>
 
-    {/* <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-10">
-      {[
-        {
-          icon: Bed,
-          title: "Luxury Rooms",
-          desc: "Elegant rooms with modern amenities",
-        },
-        {
-          icon: UtensilsCrossed,
-          title: "Family Dining",
-          desc: "Multi-cuisine restaurant experience",
-        },
-        {
-          icon: Wifi,
-          title: "Free WiFi",
-          desc: "High-speed internet access",
-        },
-        {
-          icon: Car,
-          title: "Parking",
-          desc: "Spacious and secure parking",
-        },
-        {
-          icon: ConciergeBell,
-          title: "Room Service",
-          desc: "24/7 hospitality support",
-        },
-        {
-          icon: PartyPopper,
-          title: "Event Hall",
-          desc: "Perfect for celebrations & events",
-        },
-      ].map((s) => (
-        <div
-          key={s.title}
-          className="bg-card rounded-2xl shadow-sm border border-border p-5 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-        >
-          <div className="flex justify-center">
-            <s.icon className="h-10 w-10 text-primary" />
-          </div>
 
-          <h3 className="font-semibold mt-3 text-sm md:text-base">
-            {s.title}
-          </h3>
-
-          <p className="text-xs text-muted-foreground mt-2">
-            {s.desc}
-          </p>
-        </div>
-      ))} */}
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5 mt-12">
   {[
     {
@@ -482,10 +426,6 @@ const fetchTourismPlaces = async () => {
   </div>
 </section>
 
-
-
-
-
       {/* REVIEWS */}
       <section className="container mx-auto px-4 py-20">
         <SectionHeading eyebrow="Guest Stories" title="What our guests say" />
@@ -503,35 +443,7 @@ const fetchTourismPlaces = async () => {
         </div>
       </section>
 
-
-            {/* TOURISM PREVIEW */}
-      {/* <section className="bg-secondary/50 py-20">
-        <div className="container mx-auto px-4">
-          <SectionHeading eyebrow="Explore Around" title="Tourism near Mulugu" sub="Temples, waterfalls and wild places — all minutes away." />
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {featuredTourism.map((t) => (
-              <div key={t.id} className="group overflow-hidden rounded-2xl bg-card border border-border shadow-soft hover:shadow-luxury transition">
-                <div className="h-44 overflow-hidden">
-                  <img src={t.image} alt={t.name} className="h-full w-full object-cover transition group-hover:scale-105" />
-                </div>
-                <div className="p-4">
-                  <h3 className="font-display text-lg font-bold">{t.name}</h3>
-                  <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{t.description}</p>
-                  <p className="mt-2 flex items-center gap-1 text-xs text-gold"><MapPin className="h-3 w-3" /> {t.distance}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-10 text-center">
-            <Link to="/tourism" className="rounded-md gradient-gold px-6 py-3 text-sm font-semibold text-gold-foreground shadow-soft">
-              View All Tourism Places
-            </Link>
-          </div>
-        </div>
-      </section> */}
-
-
-      {/* TOURISM PREVIEW */}
+{/* TOURISM PREVIEW */}
 <section className="bg-secondary/50 py-20">
   <div className="container mx-auto px-4">
     <SectionHeading
@@ -541,74 +453,79 @@ const fetchTourismPlaces = async () => {
     />
 
     <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {featuredTourism.map((t, i) => (
-        <motion.div
-          key={t.id}
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{ once: true }}
-          transition={{
-            duration: 0.7,
-            delay: i * 0.12,
-          }}
-          className="group overflow-hidden rounded-2xl bg-card border border-border shadow-soft hover:shadow-luxury hover:-translate-y-1 transition-all duration-500"
-        >
-          {/* Image */}
-          <div className="relative h-44 overflow-hidden">
-            <motion.img
-  src={t.image_url}
-  alt={t.name}
-              initial={{
-                opacity: 0,
-                y: 15,
-                scale: 1.08,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-                scale: 1,
-              }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 1.2,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.04]"
-            />
+      {featuredTourism.length === 0 ? (
+        <div className="col-span-full text-center py-10 text-muted-foreground">
+          No tourism places available right now
+        </div>
+      ) : (
+        featuredTourism.map((t, i) => (
+          <motion.div
+            key={t.id}
+            initial={{
+              opacity: 0,
+              y: 30,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 0.7,
+              delay: i * 0.12,
+            }}
+            className="group overflow-hidden rounded-2xl bg-card border border-border shadow-soft hover:shadow-luxury hover:-translate-y-1 transition-all duration-500"
+          >
+            {/* Image */}
+            <div className="relative h-44 overflow-hidden">
+              <motion.img
+                src={t.image_url}
+                alt={t.name}
+                initial={{
+                  opacity: 0,
+                  y: 15,
+                  scale: 1.08,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 1.2,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.04]"
+              />
 
-            {/* Luxury Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-60" />
-          </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-60" />
+            </div>
 
-          {/* Content */}
-          <div className="p-4">
-            <h3 className="font-display text-lg font-bold line-clamp-1">
-              {t.name}
-            </h3>
+            {/* Content */}
+            <div className="p-4">
+              <h3 className="font-display text-lg font-bold line-clamp-1">
+                {t.name}
+              </h3>
 
-            <p className="mt-2 text-xs text-muted-foreground line-clamp-2">
-              {t.description}
-            </p>
-
-            <div className="mt-3 flex items-center justify-between">
-              <p className="flex items-center gap-1 text-xs text-gold">
-                <MapPin className="h-3 w-3" />
-                {t.distance}
+              <p className="mt-2 text-xs text-muted-foreground line-clamp-2">
+                {t.description}
               </p>
 
-              <span className="text-xs font-medium text-muted-foreground group-hover:text-gold transition">
-                Explore →
-              </span>
+              <div className="mt-3 flex items-center justify-between">
+                <p className="flex items-center gap-1 text-xs text-gold">
+                  <MapPin className="h-3 w-3" />
+                  {t.distance}
+                </p>
+
+                <span className="text-xs font-medium text-muted-foreground group-hover:text-gold transition">
+                  Explore →
+                </span>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      ))}
+          </motion.div>
+        ))
+      )}
     </div>
 
     <div className="mt-10 text-center">
@@ -621,36 +538,6 @@ const fetchTourismPlaces = async () => {
     </div>
   </div>
 </section>
-
-
-                  {/* SERVICES */}
-      {/* <section className="bg-foreground text-background py-20">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-xs uppercase tracking-[0.3em] text-gold font-semibold">Special Services</p>
-            <h2 className="mt-2 font-display text-3xl md:text-4xl font-bold">Everything you need, beautifully done</h2>
-          </div>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              { icon: Bed, title: "Luxury Rooms", desc: "Elegant rooms with modern amenities." },
-              { icon: UtensilsCrossed, title: "Family Dining", desc: "Multi-cuisine restaurant for all guests." },
-              { icon: Wifi, title: "Free WiFi", desc: "High-speed internet across the property." },
-              { icon: Car, title: "Parking", desc: "Spacious secure parking on-site." },
-              { icon: ConciergeBell, title: "Room Service", desc: "24/7 in-room dining and concierge." },
-              { icon: PartyPopper, title: "Event Hall", desc: "Party hall for functions and gatherings." },
-            ].map((s) => (
-              <div key={s.title} className="rounded-2xl border border-background/10 bg-background/5 p-6 hover:bg-background/10 transition">
-                <s.icon className="h-8 w-8 text-gold" />
-                <h3 className="mt-4 font-display text-xl font-bold">{s.title}</h3>
-                <p className="mt-2 text-sm text-background/70">{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
-      
-
 
 
 

@@ -1,10 +1,10 @@
+
+
 import { useState, type ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { Menu, X, LogOut, Crown } from "lucide-react";
-
 export type SidebarItem = { key: string; label: string; icon: React.ComponentType<{ className?: string }> };
-
 export function DashboardShell({
   title,
   items,
@@ -43,7 +43,7 @@ export function DashboardShell({
         </nav>
         <div className="absolute bottom-4 left-0 right-0 px-3 space-y-2">
           <div className="rounded-md bg-sidebar-accent p-3 text-xs">
-            <p className="font-semibold">{user?.name}</p>
+            <p className="font-semibold"> {user?.first_name} {user?.last_name}</p>
             <p className="text-sidebar-foreground/70">{user?.email}</p>
           </div>
           <button onClick={() => { logout(); navigate({ to: "/" }); }} className="w-full flex items-center gap-2 rounded-md bg-sidebar-accent px-3 py-2 text-sm hover:bg-sidebar-border">
@@ -56,7 +56,14 @@ export function DashboardShell({
       {/* Main */}
       <div className="flex-1 flex flex-col min-h-screen lg:ml-0">
         <header className="sticky top-0 z-30 flex items-center justify-between gap-3 bg-card border-b border-border px-4 py-3">
-          <button className="lg:hidden p-2" onClick={() => setOpen(true)} aria-label="Open menu"><Menu /></button>
+        <button
+  className="lg:hidden p-2"
+  onClick={() => setOpen(true)}
+  aria-label="Open menu"
+  aria-expanded={open}
+>
+  <Menu />
+</button>
           <h1 className="font-display text-lg font-bold flex-1 capitalize">{active.replace(/-/g, " ")}</h1>
           <span className="hidden md:inline rounded-full bg-secondary px-3 py-1 text-xs font-medium">{title}</span>
         </header>
@@ -105,13 +112,29 @@ export function StatCard({
     </div>
   );
 }
-export function DataTable({ columns, rows }: { columns: string[]; rows: (string | number)[][] }) {
+export function DataTable({
+  columns,
+  rows,
+}: {
+  columns: string[];
+  rows: (string | number | ReactNode)[][];
+})  {
   return (
     <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-soft">
       <table className="w-full text-sm">
-        <thead className="bg-secondary/50 text-left">
-          <tr>{columns.map((c) => <th key={c} className="px-4 py-3 font-semibold">{c}</th>)}</tr>
-        </thead>
+       <thead className="bg-secondary/50 text-left">
+  <tr>
+    {columns.map((c) => (
+      <th
+        key={c}
+        scope="col"
+        className="px-4 py-3 font-semibold"
+      >
+        {c}
+      </th>
+    ))}
+  </tr>
+</thead>
         <tbody>
           {rows.map((r, i) => (
             <tr key={i} className="border-t border-border hover:bg-secondary/30">

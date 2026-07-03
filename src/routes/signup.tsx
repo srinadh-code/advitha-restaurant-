@@ -28,7 +28,8 @@ function Inner() {
     email: "",
     password: "",
   });
-
+  
+const [loading, setLoading] = useState(false);
   const validate = () => {
     const newErrors = {
       name: "",
@@ -59,9 +60,11 @@ function Inner() {
 if (!f.password) {
   newErrors.password = "Password is required";
   isValid = false;
-} else if (f.password.length < 4) {
+} else if (
+  !/^(?=.*[^A-Za-z])(?=.{8,})/.test(f.password)
+) {
   newErrors.password =
-    "Password must be more than 3 characters";
+    "Password must be at least 8 characters and contain at least one non-letter character.";
   isValid = false;
 }
 
@@ -70,12 +73,15 @@ if (!f.password) {
   };
 
   const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!validate()) {
-      return;
-    }
+  if (loading) return;
 
+  if (!validate()) return;
+
+  setLoading(true);
+
+  try {
     const r = await signup(
       f.name,
       f.email,
@@ -89,7 +95,11 @@ if (!f.password) {
 
     toast.success("Account created!");
     navigate({ to: "/login" });
-  };
+  } finally {
+    setLoading(false);
+  }
+};
+   
 
   return (
     <section className="container mx-auto grid place-items-center px-4 py-20">
@@ -104,9 +114,16 @@ if (!f.password) {
         >
           {/* Full Name */}
           <div>
+            <label
+    htmlFor="name"
+    className="mb-1 block text-sm font-medium"
+  >
+    Full Name
+  </label>
             <input
+              id="name"
               className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              placeholder="Full Name"
+              placeholder="user name"
               value={f.name}
               onChange={(e) => {
                 setF({
@@ -130,9 +147,16 @@ if (!f.password) {
 
           {/* Email */}
           <div>
+            <label
+    htmlFor="email"
+    className="mb-1 block text-sm font-medium"
+  >
+    Email
+  </label>
             <input
+              id="email"
               className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              placeholder="Email"
+              placeholder="abc@gmail.com"
               type="email"
               value={f.email}
               onChange={(e) => {
@@ -157,9 +181,16 @@ if (!f.password) {
 
           {/* Password */}
           <div>
+            <label
+    htmlFor="password"
+    className="mb-1 block text-sm font-medium"
+  >
+    Password
+  </label>
             <input
+              id="password"
               className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              placeholder="Password"
+              placeholder="abcde@123"
               type="password"
               value={f.password}
               onChange={(e) => {
@@ -182,9 +213,13 @@ if (!f.password) {
             )}
           </div>
 
-          <button className="w-full rounded-md gradient-gold py-2.5 text-sm font-semibold text-gold-foreground shadow-soft">
-            Sign Up
-          </button>
+          <button
+  type="submit"
+  disabled={loading}
+  className="w-full rounded-md gradient-gold py-2.5 text-sm font-semibold text-gold-foreground shadow-soft disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  {loading ? "Signing Up..." : "Sign Up"}
+</button>
         </form>
 
         <p className="mt-4 text-center text-sm">

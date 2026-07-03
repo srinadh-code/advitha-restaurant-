@@ -188,7 +188,7 @@ const handleCheckIn = async (id: number) => {
 const fetchRooms = async () => {
   const response = await API.get("/api/rooms/");
   setRooms(response.data);
-  console.log(response.data);
+
 };
 
 

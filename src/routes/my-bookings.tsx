@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { SectionHeading } from "@/components/SectionHeading";
+import API from "@/api/api";
+
+
 
 export const Route = createFileRoute("/my-bookings")({
   component: MyBookingsPage,
@@ -39,61 +42,43 @@ function MyBookingsPage() {
       return;
     }
 
-    try {
-      const response = await fetch("http://127.0.0.1:8000/bookings/my/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+ 
 
-      const data = await response.json();
-      console.log(data);
 
-      if (!response.ok) {
-        toast.error(data.message || "Unable to load bookings.");
-        return;
-      }
 
-      setBookings(data);
-    } catch (error) {
-      console.error(error);
-      toast.error("Server Error");
-    } finally {
-      setLoading(false);
-    }
+  try {
+  const response = await API.get("/api/bookings/my/");
+
+ 
+
+  setBookings(response.data);
+} catch (error: any) {
+  console.error(error);
+  toast.error(
+    error.response?.data?.message || "Unable to load bookings."
+  );
+} finally {
+  setLoading(false);
+}
   };
 
   const cancelBooking = async (id: number) => {
-    if (!confirm("Are you sure you want to cancel this booking?")) {
-      return;
-    }
+  if (!confirm("Are you sure you want to cancel this booking?")) {
+    return;
+  }
 
-    const token = localStorage.getItem("access");
+  try {
+    await API.delete(`/api/bookings/cancel/${id}/`);
 
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/bookings/cancel/${id}/`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success("Booking cancelled");
-        fetchBookings();
-      } else {
-        toast.error(data.message || "Unable to cancel booking.");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Server Error");
-    }
-  };
+    toast.success("Booking cancelled");
+    fetchBookings();
+  } catch (error: any) {
+    console.error(error);
+    toast.error(
+      error.response?.data?.message || "Unable to cancel booking."
+    );
+  }
+};
 
   return (
     <SiteLayout>
