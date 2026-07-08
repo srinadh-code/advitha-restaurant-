@@ -53,6 +53,41 @@ interface DashboardData {
     guests: number;
   }[];
 }
+interface Customer {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  bookings: number;
+  room_bookings_count: number;
+  event_bookings_count: number;
+}
+interface CustomerDetail {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+
+  room_bookings_count: number;
+  event_bookings_count: number;
+
+  room_bookings: {
+    id: number;
+    room: string;
+    check_in: string;
+    check_out: string;
+    guests: number;
+    status: string;
+  }[];
+
+  event_bookings: {
+    id: number;
+    event: string;
+    event_date: string;
+    guests: number;
+    status: string;
+  }[];
+}
 
 interface Booking {
   id: number;
@@ -2289,13 +2324,269 @@ function GalleryView() {
 
 
 function CustomersView() {
-  return <DataTable columns={["Name", "Email", "Bookings"]} rows={[
-    ["Ramesh K.", "ramesh@x.com", 3],
-    ["Lakshmi P.", "lakshmi@x.com", 1],
-    ["Arjun M.", "arjun@x.com", 2],
-    ["Sneha V.", "sneha@x.com", 4],
-  ]} />;
+  const [customers, setCustomers] = useState<Customer[]>([]);
+
+  
+
+
+const [selectedCustomer, setSelectedCustomer] =
+  useState<CustomerDetail | null>(null);
+
+const [showModal, setShowModal] =
+  useState(false);
+  
+
+  const fetchCustomers = async () => {
+    try {
+      const res = await API.get("/api/bookings/customers/");
+      setCustomers(res.data);
+    } catch {
+      toast.error("Failed to load customers");
+    }
+  };
+  const handleView = async (id: number) => {
+  try {
+    const res = await API.get(`/api/bookings/customers/${id}/`);
+
+    console.log(res.data); // temporary
+
+    setSelectedCustomer(res.data);
+    setShowModal(true);
+
+  } catch {
+    toast.error("Failed to load customer details");
+  }
+
+  
+};
+
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+
+  return (
+  <div className="rounded-2xl bg-card border border-border p-6 shadow-soft">
+
+    <h2 className="text-2xl font-bold mb-4">
+      Customers
+    </h2>
+
+    <div className="overflow-x-auto">
+
+      <table className="w-full">
+
+        <thead className="bg-gray-100">
+
+          <tr>
+            <th className="p-3 text-left">Name</th>
+            <th className="p-3 text-left">Email</th>
+            <th className="p-3 text-left">Phone</th>
+<th className="p-3 text-left">Room Bookings</th>
+<th className="p-3 text-left">Event Bookings</th>
+<th className="p-3 text-left">Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {customers.map((customer) => (
+
+            <tr
+              key={customer.id}
+              className="border-t"
+            >
+
+              <td className="p-3">
+                {customer.name}
+              </td>
+
+              <td className="p-3">
+                {customer.email}
+              </td>
+
+              <td className="p-3">
+  {customer.phone || "-"}
+</td>
+
+              <td className="p-3">
+  {customer.room_bookings_count > 0
+    ? customer.room_bookings_count
+    : "-"}
+</td>
+
+<td className="p-3">
+  {customer.event_bookings_count > 0
+    ? customer.event_bookings_count
+    : "-"}
+</td>
+
+              <td className="p-3">
+
+                <button
+  onClick={() => handleView(customer.id)}
+  className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+>
+  View
+</button>
+
+              </td>
+
+            </tr>
+
+          ))}
+
+        </tbody>
+
+      </table>
+
+    </div>
+    {showModal && selectedCustomer && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+
+    <div className="w-full max-w-3xl rounded-xl bg-white p-6 shadow-xl">
+
+      <div className="flex justify-between items-center mb-5">
+        <h2 className="text-2xl font-bold">
+          Customer Details
+        </h2>
+
+        <button
+          onClick={() => setShowModal(false)}
+          className="rounded bg-red-500 px-3 py-1 text-white"
+        >
+          Close
+        </button>
+      </div>
+
+      <div className="space-y-2 mb-6">
+        <p><strong>Name:</strong> {selectedCustomer.name}</p>
+        <p><strong>Email:</strong> {selectedCustomer.email}</p>
+        <p><strong>Phone:</strong> {selectedCustomer.phone}</p>
+        <p>
+  <strong>Room Bookings:</strong>{" "}
+  {selectedCustomer.room_bookings_count}
+</p>
+
+<p>
+  <strong>Event Bookings:</strong>{" "}
+  {selectedCustomer.event_bookings_count}
+</p>
+      </div>
+
+<h3 className="text-xl font-semibold mb-3">
+  Room Booking History
+</h3>
+      <h3 className="text-xl font-semibold mt-8 mb-3">
+  Event Booking History
+</h3>
+
+      <table className="w-full border">
+
+        <thead className="bg-gray-100">
+
+          <tr>
+            <th className="p-2">Room</th>
+            <th className="p-2">Check In</th>
+            <th className="p-2">Check Out</th>
+            <th className="p-2">Guests</th>
+            <th className="p-2">Status</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {selectedCustomer.room_bookings.map((booking) => (
+
+            <tr
+              key={booking.id}
+              className="border-t"
+            >
+              <td className="p-2">{booking.room}</td>
+              <td className="p-2">{booking.check_in}</td>
+              <td className="p-2">{booking.check_out}</td>
+              <td className="p-2">{booking.guests}</td>
+              <td className="p-2">{booking.status}</td>
+            </tr>
+
+          ))}
+
+        </tbody>
+
+      </table>
+      <h3 className="text-xl font-semibold mt-8 mb-3">
+  Event Booking History
+</h3>
+
+<table className="w-full border">
+
+  <thead className="bg-gray-100">
+    <tr>
+      <th className="p-2">Event</th>
+      <th className="p-2">Event Date</th>
+      <th className="p-2">Guests</th>
+      <th className="p-2">Status</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    {selectedCustomer.event_bookings.length > 0 ? (
+
+      selectedCustomer.event_bookings.map((event) => (
+
+        <tr
+          key={event.id}
+          className="border-t"
+        >
+          <td className="p-2">
+            {event.event}
+          </td>
+
+          <td className="p-2">
+            {event.event_date}
+          </td>
+
+          <td className="p-2">
+            {event.guests}
+          </td>
+
+          <td className="p-2">
+            {event.status}
+          </td>
+        </tr>
+
+      ))
+
+    ) : (
+
+      <tr>
+        <td
+          colSpan={4}
+          className="p-4 text-center text-gray-500"
+        >
+          No event bookings
+        </td>
+      </tr>
+
+    )}
+
+  </tbody>
+
+</table>
+
+    </div>
+
+  </div>
+)}
+
+  </div>
+  
+);
 }
+
+
 function ReviewsView() {
   return <div className="grid gap-4 md:grid-cols-2">
     {REVIEWS.map((r) => (
