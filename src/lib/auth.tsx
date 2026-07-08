@@ -68,6 +68,20 @@ export function AuthProvider({
 };
 const syncUserFromStorage = () => {
   try {
+    // First, check if valid tokens exist
+    const accessToken = localStorage.getItem(ACCESS_KEY);
+    const refreshToken = localStorage.getItem(REFRESH_KEY);
+    
+    // If no tokens exist, clear user data and set user to null
+    if (!accessToken || !refreshToken) {
+      localStorage.removeItem(USER_KEY);
+      localStorage.removeItem(ACCESS_KEY);
+      localStorage.removeItem(REFRESH_KEY);
+      setUser(null);
+      setAuthLoading(false);
+      return;
+    }
+
     const raw = localStorage.getItem(USER_KEY);
 
     if (raw) {
@@ -94,6 +108,9 @@ const syncUserFromStorage = () => {
     }
   } catch (error) {
     console.error(error);
+    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(ACCESS_KEY);
+    localStorage.removeItem(REFRESH_KEY);
     setUser(null);
   } finally {
     setAuthLoading(false);
@@ -109,8 +126,19 @@ const syncUserFromStorage = () => {
       }
     };
 
+    // Handle logout event from API interceptor (401 responses)
+    const handleLogout = () => {
+      setUser(null);
+      setAuthLoading(false);
+    };
+
     window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
+    window.addEventListener("logout", handleLogout);
+    
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("logout", handleLogout);
+    };
   }, []);
 
   const login: Ctx["login"] = async (

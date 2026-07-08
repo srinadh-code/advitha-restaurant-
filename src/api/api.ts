@@ -18,6 +18,23 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+// Handle 401 Unauthorized responses
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clear invalid tokens and user info from localStorage
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      localStorage.removeItem("mulugu.auth");
+      
+      // Trigger storage event for other tabs
+      window.dispatchEvent(new Event("logout"));
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default API;
 
 export async function getBookings() {
